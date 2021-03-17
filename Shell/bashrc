@@ -1,0 +1,87 @@
+#!/bin/sh
+
+### My Alias ###
+# すでに ~/.bashrc があるなら追記する必要があることに注意．
+
+# -----------------------------------
+# プロンプトとか色周りの設定
+# -----------------------------------
+# 色の定義
+# 0;30m Black
+# 0;31m Red
+# 0;32m Green
+# 0;33m Yellow
+# 0;34m Blue
+# 0;35m Purple
+# 0;36m Cyan
+# 0;37m White
+# 0 は通常のフォント0を1にするとbold,4は下線,5はゆるく点滅
+# SSHの例で,text=" ssh-sesshon"は表示するテキストを意味し,
+# textラベルは,${text}にマッチするようにしておけば任意のものに定義
+# e.g.
+# PS1='\[\e[1;32m\]162F\[\e[0;32m\][\w]\n\[\e[1;32m\]>\[\e[0;37m\]\[\e[m\] '
+# Color Setting
+PS1='\[\e[1;32m\]162F\[\e[0;32m\][\w]\n\[\e[1;32m\]>\[\e[0;37m\]\[\e[m\] '
+export LS_COLORS='di=01;34'
+
+# -----------------------------------
+# SSH の接続エイリアス
+# -----------------------------------
+var_target_ip='foobar@baz.hoge.ac.jp'
+alias scope='ssh $var_target_ip'
+
+# -----------------------------------
+# エイリアス
+# -----------------------------------
+# Set alias command
+alias l='ls'
+alias ll='ls -l'
+alias lll='ls -al'
+alias use='du -d 1 -h'
+alias c='clear'
+alias smi='nvidia-smi -l 1'
+alias axel='axel -a -n 10'
+
+# -----------------------------------
+# 大文字小文字を無視してパスのtab補完
+# -----------------------------------
+if grep 'set completion-ignore-case on' ~/.inputrc >/dev/null; then
+    echo 'set completion-ignore-case on' > ~/.inputrc
+else
+    echo 'set completion-ignore-case on' >> ~/.inputrc
+fi
+
+# -----------------------------------
+# Others
+# -----------------------------------
+export HISTSIZE=100000
+alias gitlog='git log --oneline --graph --all'
+
+# -----------------------------------
+#
+# -----------------------------------
+# Installed texlive on Ubuntu.
+function platex()
+{
+TEX_FILE=$1
+FILE=${TEX_FILE%.*}
+DVI_FILE=${FILE}.dvi
+command platex ${TEX_FILE}
+command platex ${TEX_FILE}
+command dvipdfmx ${DVI_FILE}
+rm -f ${FILE}.aux ${FILE}.log ${FILE}.synctex.gz ${FILE}.dvi texput.log
+}
+
+function bibplatex()
+{
+TEX_FILE=$1
+FILE=${TEX_FILE%.*}
+DVI_FILE=${FILE}.dvi
+command platex ${TEX_FILE}
+command pbibtex ${FILE}
+command platex ${TEX_FILE}
+command dvipdfmx ${DVI_FILE}
+command rm -f ${FILE}.aux ${FILE}.log ${FILE}.synctex.gz ${FILE}.dvi texput.log
+}
+
+

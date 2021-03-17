@@ -1,0 +1,32 @@
+# ----------- How to create env and use python virtual environment with virtualenv(venv) function
+# $ cd [project dir]
+# $ python -m virtualenv [newenvname]
+# ----------- How to activate (Linux or Mac)
+# $ . [newenvname]/bin/activate
+# ----------- How to activate (Windows)
+# $ .\[newenvname]\Scripts\activate
+
+
+
+# ----------- How to use
+# pip install -r requiremnets.txt
+# ----- ref : Example requiremnets file
+# https://pip.pypa.io/en/latest/reference/pip_install/#example-requirements-file
+
+# ----------- Requirements without Version Specifiers
+pip
+setuptools
+neovim
+python-language-server
+
+# ----------- For Research
+opencv-python
+numpy
+Pillow
+pandas
+matplotlib
+jupyterlab
+torch===1.7.0+cu110
+torchaudio===0.7.0
+torchvision===0.8.1+cu110
+-f https://download.pytorch.org/whl/torch_stable.html
