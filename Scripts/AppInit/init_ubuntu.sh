@@ -17,10 +17,10 @@ sudo apt update
 sudo apt install vim -y
 
 # ::::: neovim
-sudo apt install software-properties-common -y
-sudo add-apt-repository ppa:neovim-ppa/stable -y
-sudo apt-get update
-sudo apt install neovim -y
+# sudo apt install software-properties-common -y
+# sudo add-apt-repository ppa:neovim-ppa/stable -y
+# sudo apt-get update
+# sudo apt install neovim -y
 
 # ::::: Tmux
 sudo apt install tmux -y
