@@ -170,13 +170,16 @@ CLIENT_IP=$(cut -d' ' -f 1 <<<${SSH_CONNECTION})
 # SSH情報追加
 [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] && _SSH="$RED""[SSH] ${CLIENT_IP} -> "
 
-# ホストごとに定義した文字列を表示(太字)
+# デフォルトの設定(太字)
+_HOST="${fg[yellow]}%}"%B"${HOST}"%b"[%~]"
+
+# ホストごとに定義している場合は表示内容を変更(太字)
 # (ユーザ名@ホスト名にしたい場合:"%n@%m", カレントディレクトリ:"%~", %B %bで囲むと範囲内を太字化)
 case ${HOST} in
     "FOO")  _HOST="${fg[yellow]}%}"%B"foooo"%b"[%~]" ;;
     "BAR")  _HOST="${fg[magenta]}%}"%B"baaar"%b"[%~]" ;;
 esac
-# # viモード表示追加
+# # viモード表示追加(現在は使っていない)
 # case $KEYMAP in
 #     vicmd)      _VI_MODE=$WHITE"["$VI_NORMAL"NORMAL"$WHITE"]" ;;
 #     main|viins) _VI_MODE=$WHITE"["$VI_INSERT"INSERT"$WHITE"]" ;;
@@ -245,6 +248,9 @@ alias use='du -d 1 -h'
 alias c='clear'
 alias axel='axel -a -n 10'
 alias smi='nvidia-smi -l 1'
+
+# python エンコードをUTF-8に固定(参考 : https://github.com/trac-hacks/tracsql/issues/3)
+export PYTHONIOENCODING=utf-8
 
 # :::::::::::::::::::::::::::::::::::::
 # ::::: 端末共通設定(未検証)
