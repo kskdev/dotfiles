@@ -1,32 +1,80 @@
-# ----------- How to create env and use python virtual environment with virtualenv(venv) function
-# $ cd [project dir]
-# $ python -m virtualenv [newenvname]
-# ----------- How to activate (Linux or Mac)
-# $ . [newenvname]/bin/activate
-# ----------- How to activate (Windows)
-# $ .\[newenvname]\Scripts\activate
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
+# How to create python environment via virutualenv(venv)  #
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
+
+# - - - - - - - - - - - - - - -#
+# Activate existed environment #
+# - - - - - - - - - - - - - - -#
+#
+# - For Linux
+#    $ cd [project dir]
+#    $ python -m venv [newEnvName]
+#    $ . [newEnvName]/bin/activate
+#
+# - For Windows
+#    $ cd [project dir]
+#    $ py -m virtualenv [newEnvName]
+#    $ .\[newEnvName]\Scripts\activate
+#
+# - Run command if deactivation.
+#    $ deactivate
+
+# - - - - - - - - - -#
+# Create environment #
+# - - - - - - - - - -#
+#
+# 1. Move to direcotry
+#    $ cd [project dir]
+#
+# 2. Create environment
+#  - For Linux
+#    $ python -m venv [newEnvName]
+#  - For Windows
+#    $ py -m virtualenv [newEnvName]
+#
+# 3. Activate environment
+#  - For Linux
+#    $ . [newEnvName]/bin/activate
+#  - For Windows
+#    $ .\[newEnvName]\Scripts\activate
+#
+# 4. Install library
+#    $ pip install -r requiremnets.txt
+
+# References
+# - Example requiremnets file
+#  - https://pip.pypa.io/en/latest/reference/pip_install/#example-requirements-file
 
 
+# - - - - - - - - - - - - - - - #
+#            Library            #
+# - - - - - - - - - - - - - - - #
 
-# ----------- How to use
-# pip install -r requiremnets.txt
-# ----- ref : Example requiremnets file
-# https://pip.pypa.io/en/latest/reference/pip_install/#example-requirements-file
-
-# ----------- Requirements without Version Specifiers
+# ----------- Basic libraries
 pip
 setuptools
 neovim
 python-language-server
 
-# ----------- For Research
-opencv-python
-numpy
-Pillow
+# ----------- Research libraries
+# ----- Base
+numpy==1.18.5
 pandas
+Pillow
 matplotlib
-jupyterlab
-torch===1.7.0+cu110
-torchaudio===0.7.0
-torchvision===0.8.1+cu110
--f https://download.pytorch.org/whl/torch_stable.html
+# jupyterlab
+
+# ----- Image Processing
+# opencv-python
+
+# ----- Sound Processing
+librosa
+sox
+pydub
+
+# ----- Machine Learning
+# torch===1.7.0+cu110
+# torchaudio===0.7.0
+# torchvision===0.8.1+cu110
+# -f https://download.pytorch.org/whl/torch_stable.html
+
