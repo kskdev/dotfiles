@@ -122,10 +122,6 @@ set wildmenu
 set wildignorecase
 " 補完一覧を表示
 set wildmode=list,full
-" 補完候補が1つでもポップアップを表示
-set completeopt+=menuone
-" 補完候補のポップアップ数
-set pumheight=12
 
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::Key Map
@@ -205,16 +201,24 @@ call dein#add('prabirshrestha/vim-lsp') " LSP本体
 call dein#add('mattn/vim-lsp-settings') " Language Server の簡単インストール
 call dein#add('liuchengxu/vista.vim') " LSP経由でタグジャンプなどを可能にする
 
-" 補完形
-call dein#add('Shougo/echodoc.vim') " 関数等の引数を表示
+" 補完
+" ddc.vim Deno のインストールが必要
+call dein#add('Shougo/ddc.vim')        " ddc.vim本体
+call dein#add('vim-denops/denops.vim') " ddc.vimの依存プラグイン
+" [ddc.vim 拡張] 入力補完機能追加
+call dein#add('LumaKernel/ddc-file') " ファイル名補完source
+call dein#add('Shougo/ddc-around')   " カーソル周辺の既出単語補完source
+call dein#add('shun/ddc-vim-lsp')    " LSPを経由する補完source
+" [ddc.vim 拡張] 補完挙動制御
+call dein#add('tani/ddc-fuzzy')                      " 入力中単語の補完候補filter(heavy?)
+call dein#add('Shougo/ddc-matcher_head')             " 入力中単語の補完候補filter(light?)
+call dein#add('Shougo/ddc-sorter_rank')              " 補完候補をソートするfilter
+call dein#add('Shougo/ddc-converter_remove_overlap') " 補完候補の重複を防ぐためのfilter
+call dein#add('Shougo/pum.vim')                      " 候補表示ウィンドウの制御
+" ddc 以外の補完処理プラグイン
 call dein#add('Shougo/neosnippet-snippets') " スニペット集
-call dein#add('Shougo/neosnippet.vim') " スニペット補完の動作定義
-call dein#add('prabirshrestha/asyncomplete.vim')  " asyncomplete.vim 本体
-" Asyncomplete 拡張
-call dein#add('prabirshrestha/asyncomplete-lsp.vim')  " LSP経由で補完候補に追加
-call dein#add('prabirshrestha/asyncomplete-buffer.vim')  " バッファを補完候補に追加
-call dein#add('prabirshrestha/asyncomplete-file.vim')  " ファイルパスを補完候補に追加
-call dein#add('machakann/asyncomplete-ezfilter.vim')  " fuzzy な補完を実現
+call dein#add('Shougo/neosnippet.vim')      " スニペット補完の動作定義
+call dein#add('Shougo/echodoc.vim')         " 関数等の引数をコマンドラインに表示
 
 " ファイラ
 call dein#add('lambdalisue/fern.vim')
@@ -314,45 +318,65 @@ nnoremap <Leader>v :Vista!!<CR>
 " """""""""""""""""""""""""""""
 " 補完
 " """""""""""""""""""""""""""""
+" 設定参考 https://note.com/dd_techblog/n/n97f2b6ca09d8
+call ddc#custom#patch_global('completionMenu', 'pum.vim')
+" source の登録． 登録順が候補表示時の順番となる．
+call ddc#custom#patch_global('sources', ['vim-lsp','file','around',])
+" sourceに関する設定. '_'はデフォルトの設定値．(:h ddc.txt 参照)
+" mark                   : どのプラグインのソースを使っているかを可視化
+" matchers               : 入力の絞り込みに関するsourceの設定
+" sourters               : 候補のソートを行うためのsourceの設定
+" converters             : 候補に対するフィルタリング処理を行うsourceの設定
+" minAutoCompleteLength  : 補完候補を表示するために必要な最低文字数
+" forceCompletionPattern : 登録した文字列が入力された時，無視する
+" ignoreCase             : 大文字小文字を無視する
+" isVolatile             : 候補を常にリフレッシュする
+" timeout                : 候補探索の打ち切り時間 ミリ秒で指定
+call ddc#custom#patch_global('sourceOptions', {
+\ '_': {
+\   'matchers': ['matcher_fuzzy'],
+\   'sorters': ['sorter_rank'],
+\   'converters': ['converter_remove_overlap'],
+\   'ignoreCase': v:true,
+\   'minAutoCompleteLength': 1,
+\   'timeout': 2000,
+\ },
+\ 'vim-lsp': {
+\   'mark': 'LSP', 
+\   'minAutoCompleteLength': 1,
+\   'forceCompletionPattern': '\.|:|->|"\w+/*',
+\   'timeout': 5000,
+\ },
+\ 'file': {
+\   'mark': 'file',
+\   'minAutoCompleteLength': 1,
+\   'isVolatile': v:true, 
+\   'forceCompletionPattern': '\S/\S*',
+\   'timeout': 3000,
+\ },
+\ 'around': {
+\   'mark': 'Around',
+\   'minAutoCompleteLength': 2,
+\ },
+\
+\ })
 
-" asyncomplete 設定
-" popup表示までのち円時間[ms] (defaulat:30)
-let g:asyncomplete_popup_delay = 10
-" TAB で補完(順選択)
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-" Shift TAB で補完(逆順選択)
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-" リターンキーで補完ポップアップを閉じる
-inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+call ddc#custom#patch_global('filterParams', {
+\   'converter_fuzzy': {
+\   'hlGroup': 'SpellBad'
+\ }
+\
+\ })
 
-" asyncompelte-buffer.vim 設定
-call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-    \ 'name': 'buffer',
-    \ 'allowlist': ['*'],
-    \ 'priority': 10,
-    \ 'blocklist': ['go'],
-    \ 'completor': function('asyncomplete#sources#buffer#completor'),
-    \ 'config': {
-    \    'max_buffer_size': 5000000,
-    \  },
-    \ }))
+" ファイルタイプ別の設定
+call ddc#custom#patch_filetype(['c', 'cpp'], 'sources', ['around', 'clangd'])
+call ddc#custom#patch_filetype(['c', 'cpp'], 'sourceOptions', { 'clangd': {'mark': 'C'}, })
+" ddc 有効化
+call ddc#enable()
 
-" asyncomplete-file.vim 設定
-au User asyncomplete_setup call asyncomplete#register_source(
-    \ asyncomplete#sources#file#get_source_options({
-    \ 'name': 'file',
-    \ 'allowlist': ['*'],
-    \ 'priority': 20,
-    \ 'completor': function('asyncomplete#sources#file#completor')
-    \ }))
-
-" asyncompelte-ezfilter.vim 設定
-" 大文字小文字を区別しないフィルタリング ver
-let g:asyncomplete_preprocessor =
-  \ [function('asyncomplete#preprocessor#ezfilter#filter')]
-let g:asyncomplete#preprocessor#ezfilter#config = {}
-let g:asyncomplete#preprocessor#ezfilter#config['*'] =
-  \ {ctx, items -> ctx.filter(items)}
+" pum.vim を使った補完候補の選択操作
+inoremap <Tab> <Cmd>call pum#map#insert_relative(+1)<CR>
+inoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
 
 " neosnippet 設定
 let g:neosnippet#enable_snipmate_compatibility = 1
@@ -365,6 +389,7 @@ smap <expr><C-k> neosnippet#expandable_or_jumpable() ?"\<Plug>(neosnippet_expand
 " echodoc 設定
 let g:echodoc#enable_at_startup = 1
 let g:echodoc#type = 'echo'
+
 
 """""""""""""""""""""""""""""
 " Fern - ファイラ
