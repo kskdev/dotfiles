@@ -7,6 +7,9 @@
 # ::::: パッケージアップグレード
 sudo apt update && sudo apt upgrade -y
 
+# ::::: 基本パッケージ
+sudo apt install unzip -y
+
 # ::::: zsh インストール
 sudo apt install zsh -y
 
@@ -32,6 +35,9 @@ sudo apt install tmux -y
 # sudo npm install n -g
 # sudo n stable
 # sudo apt purge -y nodejs npm
+
+# ::::: Deno (For Creating vim env)
+curl -fsSL https://deno.land/x/install/install.sh | sh
 
 # ::::: Git
 sudo apt install -y git
