@@ -317,9 +317,8 @@ nnoremap <Leader>v :Vista!!<CR>
 
 " """""""""""""""""""""""""""""
 " 補完
-" """""""""""""""""""""""""""""
 " 設定参考 https://note.com/dd_techblog/n/n97f2b6ca09d8
-call ddc#custom#patch_global('completionMenu', 'pum.vim')
+" """""""""""""""""""""""""""""
 " source の登録． 登録順が候補表示時の順番となる．
 call ddc#custom#patch_global('sources', ['vim-lsp','file','around',])
 " sourceに関する設定. '_'はデフォルトの設定値．(:h ddc.txt 参照)
@@ -348,14 +347,14 @@ call ddc#custom#patch_global('sourceOptions', {
 \   'timeout': 5000,
 \ },
 \ 'file': {
-\   'mark': 'file',
+\   'mark': 'FILE',
 \   'minAutoCompleteLength': 1,
 \   'isVolatile': v:true, 
 \   'forceCompletionPattern': '\S/\S*',
 \   'timeout': 3000,
 \ },
 \ 'around': {
-\   'mark': 'Around',
+\   'mark': 'AROUND',
 \   'minAutoCompleteLength': 2,
 \ },
 \
@@ -367,16 +366,17 @@ call ddc#custom#patch_global('filterParams', {
 \ }
 \
 \ })
+" 補完候補表示のために使用する機能． native or pum.vim or none
+call ddc#custom#patch_global('completionMenu', 'pum.vim')
+" pum.vimを使った補完候補選択の挙動定義． pum(Pop Up Menu) が見えているかで挙動を変更する.
+inoremap <expr><TAB> ddc#map#pum_visible() ? "\<Cmd>call pum#map#insert_relative(+1)<CR>" : "\<TAB>"
+inoremap <expr><S-TAB> ddc#map#pum_visible() ? "\<Cmd>call pum#map#insert_relative(-1)<CR>" : ""
 
 " ファイルタイプ別の設定
 call ddc#custom#patch_filetype(['c', 'cpp'], 'sources', ['around', 'clangd'])
 call ddc#custom#patch_filetype(['c', 'cpp'], 'sourceOptions', { 'clangd': {'mark': 'C'}, })
 " ddc 有効化
 call ddc#enable()
-
-" pum.vim を使った補完候補の選択操作
-inoremap <Tab> <Cmd>call pum#map#insert_relative(+1)<CR>
-inoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
 
 " neosnippet 設定
 let g:neosnippet#enable_snipmate_compatibility = 1
