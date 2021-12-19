@@ -201,24 +201,27 @@ call dein#add('prabirshrestha/vim-lsp') " LSP本体
 call dein#add('mattn/vim-lsp-settings') " Language Server の簡単インストール
 call dein#add('liuchengxu/vista.vim') " LSP経由でタグジャンプなどを可能にする
 
-" 補完
+" 補完 (ddc.vim + pum.vim)
 " ddc.vim Deno のインストールが必要
 call dein#add('Shougo/ddc.vim')        " ddc.vim本体
 call dein#add('vim-denops/denops.vim') " ddc.vimの依存プラグイン
+call dein#add('Shougo/pum.vim')        " 候補表示ウィンドウの制御
 " [ddc.vim 拡張] 入力補完機能追加
-call dein#add('LumaKernel/ddc-file') " ファイル名補完source
-call dein#add('Shougo/ddc-around')   " カーソル周辺の既出単語補完source
-call dein#add('shun/ddc-vim-lsp')    " LSPを経由する補完source
+call dein#add('LumaKernel/ddc-file')        " ファイル名補完source
+call dein#add('Shougo/ddc-around')          " カーソル周辺の既出単語補完source
+call dein#add('shun/ddc-vim-lsp')           " LSPを経由する補完source
+call dein#add('Shougo/ddc-cmdline')         " コマンドライン用のコマンド補完source (ddc.vim + pum.vim 前提)
+call dein#add('Shougo/ddc-cmdline-history') " コマンドライン履歴の補完source (ddc.vim + pum.vim 前提)
 " [ddc.vim 拡張] 補完挙動制御
 call dein#add('tani/ddc-fuzzy')                      " 入力中単語の補完候補filter(heavy?)
 call dein#add('Shougo/ddc-matcher_head')             " 入力中単語の補完候補filter(light?)
 call dein#add('Shougo/ddc-sorter_rank')              " 補完候補をソートするfilter
 call dein#add('Shougo/ddc-converter_remove_overlap') " 補完候補の重複を防ぐためのfilter
-call dein#add('Shougo/pum.vim')                      " 候補表示ウィンドウの制御
 " ddc 以外の補完処理プラグイン
 call dein#add('Shougo/neosnippet-snippets') " スニペット集
 call dein#add('Shougo/neosnippet.vim')      " スニペット補完の動作定義
 call dein#add('Shougo/echodoc.vim')         " 関数等の引数をコマンドラインに表示
+
 
 " ファイラ
 call dein#add('lambdalisue/fern.vim')
@@ -317,7 +320,9 @@ nnoremap <Leader>v :Vista!!<CR>
 
 " """""""""""""""""""""""""""""
 " 補完
-" 設定参考 https://note.com/dd_techblog/n/n97f2b6ca09d8
+" 設定参考
+"   https://note.com/dd_techblog/n/n97f2b6ca09d8
+"   https://zenn.dev/shougo/articles/ddc-vim-pum-vim#ddc.vim-%2B-pum.vim-%E3%81%AE%E9%80%A3%E6%90%BA%E6%96%B9%E6%B3%95
 " """""""""""""""""""""""""""""
 " source の登録． 登録順が候補表示時の順番となる．
 call ddc#custom#patch_global('sources', ['vim-lsp','file','around',])
@@ -366,11 +371,43 @@ call ddc#custom#patch_global('filterParams', {
 \ }
 \
 \ })
+
 " 補完候補表示のために使用する機能． native or pum.vim or none
 call ddc#custom#patch_global('completionMenu', 'pum.vim')
 " pum.vimを使った補完候補選択の挙動定義． pum(Pop Up Menu) が見えているかで挙動を変更する.
 inoremap <expr><TAB> ddc#map#pum_visible() ? "\<Cmd>call pum#map#insert_relative(+1)<CR>" : "\<TAB>"
 inoremap <expr><S-TAB> ddc#map#pum_visible() ? "\<Cmd>call pum#map#insert_relative(-1)<CR>" : ""
+
+" コマンドライン補完の有効化 「:」の入力時にddc.vimの設定を切り替える
+call ddc#custom#patch_global('autoCompleteEvents', ['InsertEnter','TextChangedI','TextChangedP','CmdlineEnter','CmdlineChanged'])
+nnoremap : <Cmd>call CommandlinePre()<CR>:
+" コマンドライン内での挙動の定義
+function! CommandlinePre() abort
+    " Note: It disables default command line completion!
+    " コマンドライン内専用キーマップ
+    cnoremap <expr> <Tab> pum#visible() ? '<Cmd>call pum#map#insert_relative(+1)<CR>' : ddc#manual_complete()
+    cnoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
+    cnoremap <C-y>   <Cmd>call pum#map#confirm()<CR>
+    cnoremap <C-e>   <Cmd>call pum#map#cancel()<CR>
+    let s:prev_buffer_config = ddc#custom#get_buffer() " ウィンドウ上の設定を記憶?
+    " sourceの参照と挙動の定義
+    call ddc#custom#patch_buffer('sources', ['cmdline', 'cmdline-history', 'around', 'file'])
+    call ddc#custom#patch_buffer('sourceOptions', {
+    \ '_':{'matchers': ['matcher_fuzzy'],'converters': ['converter_remove_overlap'],'ignoreCase': v:true},
+    \ 'cmdline':{'mark':'CMD','minAutoCompleteLength':1},
+    \ 'cmdline-history':{'mark':'HIST','minAutoCompleteLength':1},
+    \ 'file':{'mark':'FILE','minAutoCompleteLength':1,'forceCompletionPattern':'\S/\S*','timeout':3000},
+    \ })
+    autocmd User DDCCmdlineLeave ++once call CommandlinePost() " 設定を復元?
+    " 補完を有効化
+    call ddc#enable_cmdline_completion()
+    call ddc#enable()
+endfunction
+function! CommandlinePost() abort
+    " Restore sources
+    call ddc#custom#set_buffer(s:prev_buffer_config)
+    cunmap <Tab>
+endfunction
 
 " ファイルタイプ別の設定
 call ddc#custom#patch_filetype(['c', 'cpp'], 'sources', ['around', 'clangd'])
