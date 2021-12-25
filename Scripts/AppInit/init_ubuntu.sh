@@ -9,6 +9,7 @@ sudo apt update && sudo apt upgrade -y
 
 # ::::: 基本パッケージ
 sudo apt install unzip -y
+sudo apt install build-essential -y
 
 # ::::: zsh インストール
 sudo apt install zsh -y
@@ -41,6 +42,9 @@ curl -fsSL https://deno.land/x/install/install.sh | sh
 
 # ::::: Git
 sudo apt install -y git
+
+# ::::: その他特定ライブラリ
+sudo apt install portaudio19-dev -y  # pyaudio depends on this library.
 
 # ::::: Python with pyenv
 # ref: https://qiita.com/micheleno13/items/39ad85cfe44ca32f53ee
