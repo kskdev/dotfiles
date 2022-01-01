@@ -297,7 +297,6 @@ let g:lsp_diagnostics_signs_error = {'text': 'X'}
 let g:lsp_diagnostics_signs_warning = {'text': '!'}
 let g:lsp_diagnostics_signs_information = {'text': 'i'}
 let g:lsp_diagnostics_signs_hint = {'text': '?'}
-
 " sign と virtual text の色定義
 augroup vimlsp_colors
     autocmd!
@@ -306,6 +305,14 @@ augroup vimlsp_colors
     au ColorScheme * :hi LspInformationText ctermfg=gray guifg=gray ctermbg=235
     au ColorScheme * :hi LspHintfomationText ctermfg=cyan guifg=cyan ctermbg=235
 augroup END
+" --- LSP機能の呼び出し (gl[hoge] をベースに呼び出す) --- "
+" シンボルの情報をプレビューウィンドウで表示
+nnoremap gh :LspHover<CR>
+" 定義元にジャンプする
+nnoremap gd :LspDefinition<CR>
+" カーソル状のシンボルを解析して一括置換する．
+nnoremap gr :LspRename<CR>
+" 
 
 " vista.vim 設定
 let g:vista_fzf_preview = ['right:50%'] " fzf の表示領域設定
