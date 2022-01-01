@@ -48,8 +48,6 @@ export LANG=ja_JP.UTF-8
 setopt print_eight_bit
 # ビープを鳴らさない
 setopt nobeep
-# コマンドラインの操作UIをvi ライクに変更
-# bindkey -v
 # Ctrl+d でzshを終了しない
 setopt ignore_eof
 # 色の変更(プロンプトのカスタマイズ用)
@@ -151,6 +149,11 @@ zle -N __zsh_clean_line
 # キーバインドの設定
 bindkey '^D' __zsh_clean_line
 
+# コマンドラインのベース設定
+# コマンドラインの操作UIをemacs ライクに変更(デフォルト)
+bindkey -e
+# コマンドラインの操作UIをvi ライクに変更
+# bindkey -v
 
 # ------------------------------
 # Prompt
