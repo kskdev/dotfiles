@@ -68,11 +68,13 @@ matplotlib
 # opencv-python
 
 # ----- Sound Processing
-# Note : pydub depend on FFmpeg. pyaudio needs portaudio19-dev
+# Note : pydub depend on FFmpeg.
+# Note : pyaudio needs portaudio19-dev
 librosa
 sox
 pydub
 pyaudio
+pyroomacoustics
 
 # ----- Machine Learning
 # torch===1.7.0+cu110
