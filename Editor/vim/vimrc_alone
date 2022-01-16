@@ -210,8 +210,11 @@ call dein#add('Shougo/pum.vim')        " 候補表示ウィンドウの制御
 call dein#add('LumaKernel/ddc-file')        " ファイル名補完source
 call dein#add('Shougo/ddc-around')          " カーソル周辺の既出単語補完source
 call dein#add('shun/ddc-vim-lsp')           " LSPを経由する補完source
-call dein#add('Shougo/ddc-cmdline')         " コマンドライン用のコマンド補完source (ddc.vim + pum.vim 前提)
+" call dein#add('Shougo/ddc-cmdline')         " コマンドライン用のコマンド補完source (ddc.vim + pum.vim 前提)
+call dein#add('Shougo/ddc-source-cmdline')  " コマンドライン用のコマンド補完source (ddc.vim + pum.vim 前提)
 call dein#add('Shougo/ddc-cmdline-history') " コマンドライン履歴の補完source (ddc.vim + pum.vim 前提)
+call dein#add('Shougo/ddc-ui-native')       " NOTE: 本当に必要?
+call dein#add('Shougo/ddc-ui-pum')          " 補完候補を提示するためのポップアップ表示
 " [ddc.vim 拡張] 補完挙動制御
 call dein#add('tani/ddc-fuzzy')                      " 入力中単語の補完候補filter(heavy?)
 call dein#add('Shougo/ddc-matcher_head')             " 入力中単語の補完候補filter(light?)
@@ -380,47 +383,66 @@ call ddc#custom#patch_global('filterParams', {
 \ })
 
 " 補完候補表示のために使用する機能． native or pum.vim or none
-call ddc#custom#patch_global('completionMenu', 'pum.vim')
+call ddc#custom#patch_global('ui', 'pum')
 " pum.vimを使った補完候補選択の挙動定義． pum(Pop Up Menu) が見えているかで挙動を変更する.
-inoremap <expr><TAB> ddc#map#pum_visible() ? "\<Cmd>call pum#map#insert_relative(+1)<CR>" : "\<TAB>"
-inoremap <expr><S-TAB> ddc#map#pum_visible() ? "\<Cmd>call pum#map#insert_relative(-1)<CR>" : ""
+inoremap <expr><TAB> ddc#visible() ? "\<Cmd>call pum#map#insert_relative(+1)<CR>" : "\<TAB>"
+inoremap <expr><S-TAB> ddc#visible() ? "\<Cmd>call pum#map#insert_relative(-1)<CR>" : ""
+
+
+call ddc#custom#patch_global('cmdlineSources', {
+		    \ ':': ['cmdline-history', 'cmdline', 'around'],
+		    \ '@': ['cmdline-history', 'input', 'file', 'around'],
+		    \ '>': ['cmdline-history', 'input', 'file', 'around'],
+		    \ '/': ['around', 'line'],
+		    \ '?': ['around', 'line'],
+		    \ '-': ['around', 'line'],
+		    \ '=': ['input'],
+		    \ })
 
 " コマンドライン補完の有効化 「:」の入力時にddc.vimの設定を切り替える
-call ddc#custom#patch_global('autoCompleteEvents', ['InsertEnter','TextChangedI','TextChangedP','CmdlineEnter','CmdlineChanged'])
-nnoremap : <Cmd>call CommandlinePre()<CR>:
-" コマンドライン内での挙動の定義
-function! CommandlinePre() abort
-    " Note: It disables default command line completion!
-    " コマンドライン内専用キーマップ
-    cnoremap <expr> <Tab> pum#visible() ? '<Cmd>call pum#map#insert_relative(+1)<CR>' : ddc#manual_complete()
+call ddc#custom#patch_global(#{
+            \   ui: 'pum',
+            \   autoCompleteEvents: [
+            \     'InsertEnter', 'TextChangedI', 'TextChangedP', 'CmdlineChanged',
+            \   ],
+            \   cmdlineSources: {
+            \     ':': ['cmdline', 'cmdline-history', 'around'],
+            \   },
+            \ })
+nnoremap :       <Cmd>call CommandlinePre()<CR>:
+
+function CommandlinePre() abort
+    call ddc#custom#patch_buffer('sources', ['cmdline', 'cmdline-history', 'around', 'file'])
+
+    cnoremap <Tab>   <Cmd>call pum#map#insert_relative(+1)<CR>
     cnoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
+    cnoremap <C-n>   <Cmd>call pum#map#insert_relative(+1)<CR>
+    cnoremap <C-p>   <Cmd>call pum#map#insert_relative(-1)<CR>
     cnoremap <C-y>   <Cmd>call pum#map#confirm()<CR>
     cnoremap <C-e>   <Cmd>call pum#map#cancel()<CR>
-    let s:prev_buffer_config = ddc#custom#get_buffer() " ウィンドウ上の設定を記憶?
-    " sourceの参照と挙動の定義
-    call ddc#custom#patch_buffer('sources', ['cmdline', 'cmdline-history', 'around', 'file'])
-    call ddc#custom#patch_buffer('sourceOptions', {
-    \ '_':{'matchers': ['matcher_fuzzy'],'converters': ['converter_remove_overlap'],'ignoreCase': v:true},
-    \ 'cmdline':{'mark':'CMD','minAutoCompleteLength':1},
-    \ 'cmdline-history':{'mark':'HIST','minAutoCompleteLength':1},
-    \ 'file':{'mark':'FILE','minAutoCompleteLength':1,'forceCompletionPattern':'\S/\S*','timeout':3000},
-    \ })
-    autocmd User DDCCmdlineLeave ++once call CommandlinePost() " 設定を復元?
-    " 補完を有効化
+
+    autocmd User DDCCmdlineLeave ++once call CommandlinePost()
+
+    " Enable command line completion for next command line session
     call ddc#enable_cmdline_completion()
-    call ddc#enable()
 endfunction
-function! CommandlinePost() abort
-    " Restore sources
-    call ddc#custom#set_buffer(s:prev_buffer_config)
-    cunmap <Tab>
+
+function CommandlinePost() abort
+    silent! cunmap <Tab>
+    silent! cunmap <S-Tab>
+    silent! cunmap <C-n>
+    silent! cunmap <C-p>
+    silent! cunmap <C-y>
+    silent! cunmap <C-e>
 endfunction
+
 
 " ファイルタイプ別の設定
 call ddc#custom#patch_filetype(['c', 'cpp'], 'sources', ['around', 'clangd'])
 call ddc#custom#patch_filetype(['c', 'cpp'], 'sourceOptions', { 'clangd': {'mark': 'C'}, })
 " ddc 有効化
 call ddc#enable()
+
 
 " neosnippet 設定
 let g:neosnippet#enable_snipmate_compatibility = 1

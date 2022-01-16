@@ -1,0 +1,10 @@
+# ignore specific prefix.
+*.o
+
+# ignore specific file.
+/.DS_Store
+
+# ignore specfic dir.
+/bin/
+**/__pycache__/
+
