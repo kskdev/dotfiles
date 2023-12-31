@@ -56,20 +56,20 @@ setuptools
 neovim
 python-language-server
 
-# ----------- Research libraries
-# ----- Base
-numpy==1.18.5
+numpy
 pandas
 Pillow
 matplotlib
-# jupyterlab
+jupyterlab
+flask
+
 
 # ----- Image Processing
-# opencv-python
+opencv-python
 
 # ----- Sound Processing
 # Note : pydub depend on FFmpeg.
-# Note : pyaudio needs portaudio19-dev
+# Note : pyaudio requires portaudio19-dev
 librosa
 sox
 pydub
