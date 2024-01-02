@@ -255,6 +255,10 @@ alias smi='nvidia-smi -l 1'
 # python エンコードをUTF-8に固定(参考 : https://github.com/trac-hacks/tracsql/issues/3)
 export PYTHONIOENCODING=utf-8
 
+# git diff や git status などの日本語メッセージ文字化けを対策 https://maku77.github.io/git/settings/garbling.html
+export GIT_PAGER="LESSCHARSET=utf-8 less"
+git config --global core.quotepath false
+
 # :::::::::::::::::::::::::::::::::::::
 # ::::: 端末共通設定(未検証)
 # git更新履歴を表示
