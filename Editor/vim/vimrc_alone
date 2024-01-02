@@ -208,7 +208,7 @@ call dein#add('vim-denops/denops.vim') " ddc.vimの依存プラグイン
 call dein#add('Shougo/pum.vim')        " 候補表示ウィンドウの制御
 " [ddc.vim 拡張] 入力補完機能追加
 call dein#add('LumaKernel/ddc-source-file')        " ファイル名補完source
-call dein#add('Shougo/ddc-around')                 " カーソル周辺の既出単語補完source
+call dein#add('Shougo/ddc-source-around')          " カーソル周辺の既出単語補完source
 call dein#add('shun/ddc-vim-lsp')                  " LSPを経由する補完source
 " call dein#add('Shougo/ddc-cmdline')         " コマンドライン用のコマンド補完source (ddc.vim + pum.vim 前提)
 call dein#add('Shougo/ddc-source-cmdline')         " vimコマンドラインでのコマンド補完用source
@@ -356,7 +356,7 @@ call ddc#custom#patch_global('sourceOptions', {
 \   'timeout': 1000,
 \ },
 \ 'vim-lsp': {
-\   'mark': 'LSP', 
+\   'mark': ' LSP', 
 \   'minAutoCompleteLength': 1,
 \   'forceCompletionPattern': '\.|:|->|"\w+/*',
 \   'timeout': 2000,
@@ -369,11 +369,11 @@ call ddc#custom#patch_global('sourceOptions', {
 \   'timeout': 1000,
 \ },
 \ 'around': {
-\   'mark': 'AROUND',
+\   'mark': 'ARND',
 \   'minAutoCompleteLength': 2,
 \ },
 \ 'cmdline': {
-\   'mark': 'CMD',
+\   'mark': ' CMD',
 \   'minAutoCompleteLength': 1,
 \   'timeout':  500,
 \ },
@@ -390,6 +390,11 @@ call ddc#custom#patch_global('filterParams', {
 \   'hlGroup': 'SpellBad'
 \ }
 \
+\ })
+
+call ddc#custom#patch_global('sourceParams', #{
+\   around: #{ maxSize    : 128     },
+\   file  : #{ disableMenu: v:true, },
 \ })
 
 " 補完候補表示のために使用する機能． native or pum.vim or none
