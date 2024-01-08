@@ -1,0 +1,59 @@
+// 既定値を上書きするには、このファイル内にキー バインドを挿入しますauto[]
+[
+    // ---- エディター操作
+    // 補完候補選択 : 次へ
+    {
+        "key": "tab",
+        "command": "selectNextSuggestion",
+        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "selectNextSuggestion",
+        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+    },
+
+    // 補完候補選択 : 前へ
+    {
+        "key": "shift+tab",
+        "command": "selectPrevSuggestion",
+        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "selectPrevSuggestion",
+        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+    },
+
+
+    // ---- ワークスペース操作
+    // ペイン移動
+    {
+        "key": "ctrl+o",
+        "command": "workbench.action.togglePanel",
+    },
+    {
+        "key": "ctrl+i",
+        "command": "workbench.action.nextPanelView",
+    },
+
+
+    // ---- コマンドパレット操作
+    {  // 次の候補へ
+        "key": "ctrl+j",
+        "command": "workbench.action.quickOpenSelectNext",
+        "when": "inQuickOpen",
+    },
+    {  // 前の候補へ
+        "key": "ctrl+k",
+        "command": "workbench.action.quickOpenSelectPrevious",
+        "when": "inQuickOpen",
+    },
+    {  // コマンドパレットを閉じる
+        "key": "ctrl+space",
+        "command": "workbench.action.closeQuickOpen",
+        "when": "inQuickOpen",
+    },
+
+
+]
