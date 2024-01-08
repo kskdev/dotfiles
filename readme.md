@@ -11,6 +11,12 @@
 
 ## log
 
+#### 2024/01/08
+- vimの補完設定を更新．
+  - asyncomplete.vim から ddc.vim(+pum.vim)
+- VScodeの設定ファイル(json)を追加．
+  - sync が使えない環境でも使えるようにするため．
+
 #### 2021/12/19
 - vimの保管プラグインのベースを変更．
   - asyncomplete.vim から ddc.vim(+pum.vim)
