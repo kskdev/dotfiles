@@ -1,0 +1,46 @@
+# Build Vim9 tips
+
+```
+cd ~
+```
+
+```
+sudo apt install build-essential autoconf automake cproto gettext libtinfo-dev libacl1-dev libgpm-dev libxmu-dev libgtk-3-dev libxpm-dev libperl-dev python3-dev ruby-dev libncurses-dev
+```
+
+```
+git clone https://github.com/vim/vim.git
+mv vim/ vim9/
+cd vim9/
+```
+
+```
+make distclean && \
+./configure \
+--prefix=/opt/vim9 \
+--enable-multibyte \
+--enable-cscope \
+--enable-fontset \
+--enable-xim \
+--enable-terminal \
+--enable-fail-if-missing \
+--with-luajit \
+--with-x \
+--enable-tclinterp \
+--enable-gui=gtk3 \
+--enable-perlinterp \
+--enable-python3interp \
+--with-python3-command=/usr/bin/python3 \
+&& make
+```
+
+
+```
+sudo make install
+```
+
+
+You should add path
+```
+export PATH="/opt/vim9/bin:$PATH"
+```
