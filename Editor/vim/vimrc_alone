@@ -210,6 +210,8 @@ call dein#add('Shougo/pum.vim')        " 候補表示ウィンドウの制御
 call dein#add('LumaKernel/ddc-source-file')        " ファイル名補完source
 call dein#add('Shougo/ddc-source-around')          " カーソル周辺の既出単語補完source
 call dein#add('shun/ddc-vim-lsp')                  " LSPを経由する補完source
+call dein#add('Shougo/neco-vim')                   " .vim .toml の補完source
+
 " call dein#add('Shougo/ddc-cmdline')         " コマンドライン用のコマンド補完source (ddc.vim + pum.vim 前提)
 call dein#add('Shougo/ddc-source-cmdline')         " vimコマンドラインでのコマンド補完用source
 call dein#add('Shougo/ddc-source-cmdline-history') " vimコマンドライン履歴の補完source
@@ -382,6 +384,9 @@ call ddc#custom#patch_global('sourceOptions', {
 \   'minAutoCompleteLength': 1,
 \   'timeout':  500,
 \ },
+\ 'necovim': {
+\   'mark': 'vim',
+\ },
 \
 \ })
 
@@ -455,6 +460,7 @@ endfunction
 " ファイルタイプ別の設定
 call ddc#custom#patch_filetype(['c', 'cpp'], 'sources', ['around', 'clangd'])
 call ddc#custom#patch_filetype(['c', 'cpp'], 'sourceOptions', { 'clangd': {'mark': 'C'}, })
+call ddc#custom#patch_filetype(['vim', 'toml'], 'sources', ['necovim','file','around','cmdline-history','cmdline'])
 " ddc 有効化
 call ddc#enable()
 
