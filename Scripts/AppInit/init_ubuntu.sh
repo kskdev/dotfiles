@@ -39,6 +39,17 @@ sudo apt install tmux -y
 
 # ::::: Deno (For Creating vim env)
 curl -fsSL https://deno.land/x/install/install.sh | sh
+# rcファイルに追記
+DENO_EXPORT1="$(HOME)/.deno"
+DENO_EXPORT2="\$DENO_INSTALL/bin:\$PATH"
+if grep ${DENO_EXPORT1} ~/.zshrc; then
+    echo "pattern exists."
+    :
+else
+    echo "pattern does not exists. add setting to ~/.zshrc"
+    echo ${DENO_EXPORT1} >> ~/.zshrc
+    echo ${DENO_EXPORT2} >> ~/.zshrc
+fi
 
 # ::::: Git
 sudo apt install -y git
