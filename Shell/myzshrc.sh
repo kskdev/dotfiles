@@ -245,7 +245,7 @@ esac
 
 alias l='ls -lh'
 alias ll='ls -lha'
-alias vi='vim'
+alias vi='vi -u NONE -N'
 alias df='df -h'
 alias use='du -d 1 -h'
 alias c='clear'
