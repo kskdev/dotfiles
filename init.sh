@@ -7,9 +7,9 @@
 
 # --- install apps
 echo -e "\e[31m ::: 1. Install apps via apt \e[m"
-cd ./Scripts/AppInit/
+cd ./AppInit/
 sh init_ubuntu.sh
-cd ../../
+cd ../
 
 # --- setup tmux configs
 echo -e "\e[31m ::: 2. Setup tmux configs \e[m"
@@ -25,9 +25,9 @@ cd ../
 
 # --- setup vim configs
 echo -e "\e[31m ::: 4. Setup vim configs \e[m"
-cd ./Editor/vim/
+cd ./Vim/
 zsh install_vim_zsh_alone.sh
-cd ../../
+cd ../
 
 # --- setup others settings.
 echo -e "\e[31m ::: Ex. Setup others configs \e[m"

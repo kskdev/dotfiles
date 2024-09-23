@@ -22,8 +22,8 @@ fi
 # -----------------------------------
 MYZSHRC_ABS_PATH=$(cd $(dirname $0); pwd)"/myzshrc.sh"
 REQUIRED_TXT="source ${MYZSHRC_ABS_PATH}"
-# if grep ${REQUIRED_TXT} ~/.zshrc >/dev/null; then
-if grep ${REQUIRED_TXT} ~/.zshrc; then
+# if grep ${REQUIRED_TXT} ~/.zshrc; then
+if grep ${REQUIRED_TXT} ~/.zshrc >/dev/null; then
     echo "pattern exists."
     :
 else
