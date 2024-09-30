@@ -17,6 +17,7 @@ sudo apt install -y zsh
 sudo apt install -y tmux
 sudo apt install -y fzf
 sudo apt install -y ripgrep
+sudo apt install -y sox
 
 
 # ::::: Dev apps
