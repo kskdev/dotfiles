@@ -1,0 +1,60 @@
+" --------------------------------------------------------------
+" Memo
+" .ideavimrc は，Windowsなら，ホームディレクトリ以下に置く．
+" :actionlist hoge と入力すると，利用可能なコマンドを確認できる．
+
+" --------------------------------------------------------------
+" References
+" - https://github.com/JetBrains/ideavim/blob/master/doc/sethandler.md
+
+
+" --------------------------------------------------------------
+" General
+
+let mapleader = ' '
+
+" yankしたときに，クリップボードにも入れる．
+set clipboard+=unnamed
+
+" vimrcのリロード
+nnoremap <Leader>load :<C-u>source ~/.ideavimrc<CR>
+
+" 検索を IDEA純正の検索ウィンドウを使用
+" nnoremap / :<C-u>action Find<CR>
+
+" --------------------------------------------------------------
+" Mappings
+
+" インサートモードからノーマルモードへ遷移
+inoremap jj <ESC>
+
+" 定義元へジャンプ
+nnoremap gd :action GotoDeclaration<CR>
+
+" カーソル位置の情報を提示(マウスホバーした時と同じ挙動)
+nnoremap <Leader>f :action ShowHoverInfo<CR>
+
+" コードリフォーマット
+nnoremap <C-l> :action ReformatCode<CR>
+
+" リネーム(参照されているものすべてを変更)
+nnoremap gr :action RenameElement<CR>
+
+" カーソルの位置移動
+nnoremap gb :action Back<CR>
+nnoremap gf :action Forward<CR>
+
+" インサートモードでのカーソル挙動
+inoremap <C-l> <Right>
+inoremap <C-h> <Left>
+
+" 左右のカーソルh,lで行間も移動可能にする(h,lの追加は非推奨らしい...)
+set whichwrap=b,s,<,>,[,],h,l
+
+
+" --------------------------------------------------------------
+" Extra Plugins
+
+" [Plugin] コメントプラグイン．Plug 経由でもset でもOK.  // gcc, gc{N}
+" Plug 'tpope/vim-commentary'
+set commentary
