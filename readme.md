@@ -11,6 +11,9 @@
 
 ## log
 
+#### 2025/06/03
+- vim/GVimのメンテナンス.
+
 #### 2024/01/08
 - vimの補完設定を更新．
   - asyncomplete.vim から ddc.vim(+pum.vim)
