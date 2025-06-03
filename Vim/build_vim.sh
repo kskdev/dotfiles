@@ -36,7 +36,7 @@ sudo apt -y install \
 git clone https://github.com/vim/vim.git
 mv vim/ vim91/
 cd vim91/
-git checkout v9.1.0739
+git checkout v9.1.1420
 
 
 # build
@@ -50,18 +50,12 @@ make distclean
 --enable-terminal \
 --enable-fail-if-missing \
 --enable-cscope \
---with-features=normal \
+--with-features=huge \
+--enable-gui=gtk3 \
 --enable-python3interp \
 --with-python3-command=/usr/bin/python3
 
 make -j$(nproc)
-
-# --with-luajit \
-# --with-x \
-# --enable-tclinterp \
-# --enable-gui=gtk3 \
-# --enable-perlinterp \
-
 
 # install
 sudo make install

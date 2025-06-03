@@ -252,9 +252,9 @@ call dein#add('nelstrom/vim-visual-star-search') " ヴィジュアルモード�
 call dein#add('osyo-manga/vim-anzu') " 検索位置を表示(マッチ数等も表示)
 call dein#add('tpope/vim-fugitive') " vim上でgit操作を可能にする
 call dein#add('airblade/vim-gitgutter') " git の diffを左端に表示
-" TODO FZFの挙動が不審なので，いったん削除．後に追加予定．
+" FZF: Lazyに検索するI/F
 if has('win32') || has('win64')
-    call dein#add('junegunn/fzf') " 曖昧検索(ファジー検索)インターフェース
+    call dein#add('junegunn/fzf', {'dir': '~/.fzf', 'hook_post_update': 'call fzf#install()' })
 elseif has('mac') || has('unix')
     call dein#add('junegunn/fzf', {'build': './install --all'}) " 曖昧検索(ファジー検索)インターフェース
 endif
