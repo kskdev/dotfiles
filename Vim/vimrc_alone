@@ -920,5 +920,13 @@ if has('win64') && has('gui')
         set ambiwidth=auto
     endif
 
+    " ファイルを開いた瞬間だけそのディレクトリに移動
+    augroup gvim_cwd
+      autocmd!
+      autocmd BufReadPost * if expand('%:p') != '' | silent! lcd %:p:h | endif
+    augroup END
+    " ステータスラインに CWD を出す
+    set statusline=%{fnamemodify(getcwd(),':~')}
+
 endif
 
