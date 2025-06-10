@@ -1,28 +1,4 @@
 {
-  // ---- Installed Extensions
-  // Name: audio-preview
-  // Name: Auto Close Tag
-  // Name: Auto Rename Tag
-  // Name: bat-snippets
-  // Name: Blockman - Highlight Nested Code Blocks
-  // Name: indent-rainbow
-  // Name: IntelliSense for CSS class names in HTML
-  // Name: Live Server
-  // Name: Marp for VS Code
-  // Name: Material Icon Theme
-  // Name: Output Colorizer
-  // Name: Panda Theme
-  // Name: Path Autocomplete
-  // Name: Prettier - Code formatter
-  // Name: Pylance
-  // Name: Python
-  // Name: python-snippets
-  // Name: Rainbow CSV
-  // Name: rust-analyzer
-  // Name: Tauri
-  // Name: TODO Highlight
-  // Name: Vim
-
   // ---- Editor general settings
   "workbench.editor.showIcons": true,
   "workbench.productIconTheme": "Default",
@@ -162,6 +138,11 @@
     { "before": ["C-h"], "after": ["<Esc>", "i"] }
   ],
   "vim.normalModeKeyBindingsNonRecursive": [
+    // 折り返し行でも縦移動する (論理行を表事行にマッピング vice versa)
+    { "before": ["j"], "after": ["g", "j"] },
+    { "before": ["k"], "after": ["g", "k"] },
+    { "before": ["g", "j"], "after": ["j"] },
+    { "before": ["g", "k"], "after": ["k"] },
     // 前のタブを表示
     { "before": ["C-h"], "commands": ["workbench.action.previousEditor"] },
     // 次のタブを表示
@@ -180,6 +161,11 @@
     { "before": ["<leader>", "s"], "after": ["<leader>", "<leader>", "s"] }
   ],
   "vim.visualModeKeyBindingsNonRecursive": [
+    // 折り返し行でも縦移動する (論理行を表事行にマッピング vice versa)
+    { "before": ["j"], "after": ["g", "j"] },
+    { "before": ["k"], "after": ["g", "k"] },
+    { "before": ["g", "j"], "after": ["j"] },
+    { "before": ["g", "k"], "after": ["k"] },
     // ヴィジュアルモードで連続ペースト
     { "before": ["p"], "after": ["\"", "_", "d", "P"] },
     // インデント後もヴィジュアルモードを維持
@@ -222,23 +208,20 @@
   // ---- [Ex] Aode-Align
   "autoalign.minSeparationLeft": 0,
   "autoalign.moveableItems": ["=", ":", ";", "+=", "-=", ","],
-  "autoalign.skipLinesEndingWithItems": [
-    "{",
-    "["
-  ]
+  "autoalign.skipLinesEndingWithItems": ["{", "["],
 
-  // ---- [Ex] Blockman
+  // ---- [Ex] Toggle Boolean
+  "toggleboolean.mapping": {
+    "true": false,
+    "false": true,
+    "yes": "no",
+    "no": "yes",
+    "on": "off",
+    "off": "on",
+    "0": 1,
+    "1": 0
+  }
 
-  // ---- [Ex] Live Server
-  // "liveServer.settings.CustomBrowser": "chrome",
-
-  // ---- [Ex] TODO Highlight
-  // "todohighlight.keywordsPattern": "TODO ||",
-
-  // ---- [Ex] rust-analyzer
-
-  // ---- [Ex] Extentions name goes here
-  // ---- [Ex] Extentions name goes here
   // ---- [Ex] Extentions name goes here
   // ---- [Ex] Extentions name goes here
   // ---- [Ex] Extentions name goes here
