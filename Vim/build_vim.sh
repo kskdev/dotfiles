@@ -36,8 +36,7 @@ sudo apt -y install \
 git clone https://github.com/vim/vim.git
 mv vim/ vim91/
 cd vim91/
-git checkout v9.1.1420
-
+git checkout v9.1.1893
 
 # build
 make distclean
