@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 # ::::::::::::::::::::::::::::::::::::::::
 # zsh setting for MacOS
@@ -82,7 +82,7 @@ setopt auto_menu
 # cd -[tab]で過去の移動先をリスト&ジャンプ(pushd)
 setopt auto_pushd
 # pushd から重複削除
-setopt auto_pushd
+setopt pushd_ignore_dups
 # パスだけを入力された場合，そのパスへ移動
 setopt auto_cd
 # '#'以降の文字列を無視
@@ -107,15 +107,15 @@ setopt hist_verify
 setopt hist_expire_dups_first
 # 全履歴を一覧表示
 function history-all { history -E 1 }
-# インクリメンタルからの検索
-bindkey "^A" history-incremental-search-backward
+# インクリメンタルからの検索 (^Aは行頭移動のために標準の^Rに変更)
+bindkey "^R" history-incremental-search-backward
 
-# コマンドを途中まで入力後,historyから絞り込み(挙動をいまいち分かっていない...)
+# コマンドを途中まで入力後，履歴からその単語で始まるコマンドを検索（カーソルを末尾へ移動）
 autoload -Uz history-search-end
 zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
 bindkey "^p" history-beginning-search-backward-end
-bindkey "^b" history-beginning-search-forward-end
+bindkey "^n" history-beginning-search-forward-end   # ^bから標準的な^nに変更
 
 
 
@@ -178,9 +178,9 @@ bindkey -e
 
 # ------------------------------
 # Prompt
-# 現在は,viは止めてデフォルトのモードを使用
 # ------------------------------
-# viモードで現在の入力モードをプロンプトに表示
+
+# プロンプトの表示内容を更新する関数
 function zle-line-init zle-keymap-select {
 # 色定義
 # MAIN_COLOR="%{${fg[cyan]}%}"
@@ -205,13 +205,13 @@ CLIENT_IP=$(cut -d' ' -f 1 <<<${SSH_CONNECTION})
 [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] && _SSH="$RED""[SSH] ${CLIENT_IP} -> "
 
 # デフォルトの設定(太字)
-_HOST="${fg[yellow]}%}"%B"${HOST}"%b"[%~]"
+_HOST="%{${fg[yellow]}%}%B${HOST}%b[%~]"
 
 # ホストごとに定義している場合は表示内容を変更(太字)
 # (ユーザ名@ホスト名にしたい場合:"%n@%m", カレントディレクトリ:"%~", %B %bで囲むと範囲内を太字化)
 case ${HOST} in
-    "FOO")  _HOST="${fg[yellow]}%}"%B"foooo"%b"[%~]" ;;
-    "BAR")  _HOST="${fg[magenta]}%}"%B"baaar"%b"[%~]" ;;
+    "FOO")  _HOST="%{${fg[yellow]}%}%Bfoooo%b[%~]" ;;
+    "BAR")  _HOST="%{${fg[magenta]}%}%Bbaaar%b[%~]" ;;
 esac
 # # viモード表示追加(現在は使っていない)
 # case $KEYMAP in
@@ -252,11 +252,23 @@ zstyle ':vcs_info:*' enable git
 # Alias
 # ------------------------------
 
+# WSL (Windows Subsystem for Linux) 判定
+IS_WSL=false
+if [[ "$(uname -r)" == *[Mm]icrosoft* ]]; then
+    IS_WSL=true
+fi
+
 # :::::::::::::::::::::::::::::::::::::
 # ::::: OS 別設定 :::::
 case ${OSTYPE} in
     darwin*) export CLICOLOR=1; alias ls='ls -G -F' ;;
-    linux*) alias ls='ls -F --color=auto' ;;
+    linux*) 
+        alias ls='ls -F --color=auto'
+        # WSL環境ではWindows側のパーミッションが全て777に見えるため、背景色の光りを抑制
+        if $IS_WSL; then
+            export LS_COLORS='ow=01;34:'$LS_COLORS
+        fi
+        ;;
 esac
 
 # :::::::::::::::::::::::::::::::::::::
@@ -316,11 +328,7 @@ alias scope='ssh $var_ssh_ip'
 # -----------------------------------
 # Ignore case completion
 # -----------------------------------
-if grep 'set completion-ignore-case on' ~/.inputrc >/dev/null; then
-    # echo "pattern exist"
-    echo 'set completion-ignore-case on' > ~/.inputrc
-else
-    # echo "pattern does not exist"
+if [ ! -f ~/.inputrc ] || ! grep -q 'set completion-ignore-case on' ~/.inputrc; then
     echo 'set completion-ignore-case on' >> ~/.inputrc
 fi
 
@@ -363,7 +371,7 @@ TPM_MANAGER=~/.tmux/plugins/tpm
 if [ -d ${TPM_MANAGER} ]; then
     :
 else
-    echo "${TPM_MANAGER} is doesn't found. Start installing TPM."
+    echo "${TPM_MANAGER} was not found. Start installing TPM."
     git clone https://github.com/tmux-plugins/tpm ${TPM_MANAGER}
 fi
 
