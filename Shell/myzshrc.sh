@@ -99,6 +99,12 @@ setopt hist_expand
 setopt hist_reduce_blanks
 # 履歴をインクリメンタルに追加
 setopt inc_append_history
+# 履歴ファイルにタイムスタンプを記録
+setopt extended_history
+# 履歴を呼び出した後，すぐ実行せずに一度編集できるようにする
+setopt hist_verify
+# 古い履歴を削除する場合，重複しているものを優先的に削除する
+setopt hist_expire_dups_first
 # 全履歴を一覧表示
 function history-all { history -E 1 }
 # インクリメンタルからの検索
@@ -134,6 +140,21 @@ bindkey '^ ' autosuggest-accept
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=103'
 # 色確認用ワンライナー
 # for c in {000..255}; do echo -n "\e[38;5;${c}m $c" ; [ $(($c%16)) -eq 15 ] && echo;done;echo
+
+
+# -----------------------------------
+# zsh syntax highlighting extension
+# -----------------------------------
+# コマンドの構文に応じて色付け。必ず zsh-autosuggestions より後に読み込む
+ZSH_HIGHLIGHT1=~/.zsh/zsh-syntax-highlighting
+ZSH_HIGHLIGHT2=${ZSH_HIGHLIGHT1}/zsh-syntax-highlighting.zsh
+if [ -d ${ZSH_HIGHLIGHT1} ]; then
+    source ${ZSH_HIGHLIGHT2}
+else
+    echo "zsh-syntax-highlighting doesn't exist. Start installing..."
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_HIGHLIGHT1}
+    source ${ZSH_HIGHLIGHT2}
+fi
 
 
 # 例) Ctrl + Dで文字列削除
@@ -252,6 +273,10 @@ esac
 
 # :::::::::::::::::::::::::::::::::::::
 # ::::: 全端末共通設定
+
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
 
 alias l='ls -lh'
 alias ll='ls -lha'
