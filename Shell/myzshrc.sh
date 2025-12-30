@@ -167,6 +167,16 @@ function zle-line-init zle-keymap-select {
 # VI_INSERT="%{${fg[blue]}%}"
 WHITE="%{${fg[white]}%}"
 RED="%{${fg[red]}%}"
+GREEN="%{${fg[green]}%}"
+RESET="%{${reset_color}%}"
+
+# venv/conda環境を表示
+_VENV=""
+if [ -n "${VIRTUAL_ENV}" ]; then
+    _VENV="${GREEN}[VENV:$(basename "$VIRTUAL_ENV")] ${RESET}"
+elif [ -n "${CONDA_DEFAULT_ENV}" ]; then
+    _VENV="${GREEN}[CONDA:${CONDA_DEFAULT_ENV}] ${RESET}"
+fi
 
 # クライアントPCのIP Addressのみ取得
 CLIENT_IP=$(cut -d' ' -f 1 <<<${SSH_CONNECTION})
@@ -194,7 +204,7 @@ _N=$WHITE"
 %b> "
 
 # プロンプトに設定
-PROMPT=${_SSH}${_HOST}${_N}
+PROMPT=${_VENV}${_SSH}${_HOST}${_N}
 
 zle reset-prompt
 }
