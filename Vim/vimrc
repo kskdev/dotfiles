@@ -1,0 +1,107 @@
+" Vim Configuration - モジュール化版エントリポイント
+"
+" このファイルを .vimrc として，HOMEディレクトリに配置して，vimを起動するだけ．
+" インストーラ: ./install.sh
+"
+" 前提条件:
+"   - macOS: brew install fzf ripgrep deno
+"   - Linux: apt install fzf ripgrep deno
+"
+" ディレクトリ構造:
+"   Vim/
+"   ├── vimrc          # このファイル（エントリポイント）
+"   ├── dein/
+"   │   ├── plugins.toml  # 即時読み込みプラグイン
+"   │   └── lazy.toml     # 遅延読み込みプラグイン
+"   └── rc/
+"       ├── options.vim   # 基本設定
+"       ├── lsp.vim       # LSP設定
+"       ├── completion.vim # 補完設定
+"       ├── fzf.vim       # FZF設定
+"       ├── fern.vim      # ファイラ設定
+"       └── lightline.vim # ステータスライン設定
+
+" viとの互換を切る
+if &compatible
+    set nocompatible
+endif
+
+" 基本設定の読み込み
+let s:vim_dir = expand('~/.vim')
+let s:rc_dir = s:vim_dir . '/rc'
+execute 'source' s:rc_dir . '/options.vim'
+
+" ====================
+" dein.vim 設定
+" ====================
+let g:dein_dir = s:vim_dir . '/dein'
+let s:dein_repo_dir = g:dein_dir . '/repos/github.com/Shougo/dein.vim'
+
+" dein.vimが存在していない場合はgithubからclone
+if &runtimepath !~# '/dein.vim'
+    if !isdirectory(s:dein_repo_dir)
+        execute '!git clone https://github.com/Shougo/dein.vim' s:dein_repo_dir
+    endif
+    execute 'set runtimepath^=' . s:dein_repo_dir
+endif
+
+" TOML ファイルのパス
+let s:toml_dir = expand('~/.vim/dein')
+let s:toml_file = s:toml_dir . '/plugins.toml'
+let s:lazy_toml_file = s:toml_dir . '/lazy.toml'
+
+" dein 設定開始
+if dein#load_state(g:dein_dir)
+    call dein#begin(g:dein_dir)
+
+    " TOML ファイルからプラグイン読み込み
+    if filereadable(s:toml_file)
+        call dein#load_toml(s:toml_file, {'lazy': 0})
+    endif
+    if filereadable(s:lazy_toml_file)
+        call dein#load_toml(s:lazy_toml_file, {'lazy': 1})
+    endif
+
+    call dein#end()
+    call dein#save_state()
+endif
+
+" プラグインが入っていなければvim起動時に自動でインストール
+if dein#check_install()
+    call dein#install()
+endif
+
+" filetype 有効化
+filetype plugin indent on
+syntax enable
+
+" ====================
+" カラースキーム
+" ====================
+" プラグイン未インストール時はデフォルトにフォールバック
+try
+    colorscheme iceberg
+catch /^Vim\%((\a\+)\)\=:E185/
+    " iceberg が見つからない場合はデフォルトを使用
+endtry
+set bg=dark
+
+" ====================
+" Gitgutter 追加設定
+" ====================
+set updatetime=100
+let g:gitgutter_sign_added='+'
+let g:gitgutter_sign_modified='~'
+let g:gitgutter_sign_removed='-'
+let g:gitgutter_sign_removed_first_line = '^'
+let g:gitgutter_sign_modified_removed = 'w'
+nmap <C-f> <Plug>(GitGutterNextHunk)
+nmap <C-d> <Plug>(GitGutterPrevHunk)
+
+" ====================
+" matchup 追加設定
+" ====================
+augroup matchup_matchparen_highlight
+    autocmd!
+    autocmd ColorScheme * hi MatchParen ctermbg=bg guibg=bg ctermfg=yellow guifg=LightGreen cterm=bold gui=bold
+augroup END

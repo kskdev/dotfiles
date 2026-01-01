@@ -1,0 +1,235 @@
+# Vim dein lazy.toml - 遅延読み込みプラグイン
+# 必要なタイミングで読み込まれ，起動速度を改善
+
+# ====================
+# LSP (ファイルタイプ検出時)
+# ====================
+[[plugins]]
+hook_source = '''
+  source ~/.vim/rc/lsp.vim
+'''
+on_event = 'FileType'
+repo = 'prabirshrestha/vim-lsp'
+
+[[plugins]]
+depends = ['vim-lsp']
+on_source = ['vim-lsp']
+repo = 'mattn/vim-lsp-settings'
+
+# ====================
+# 補完 (InsertEnter時)
+# ====================
+[[plugins]]
+depends = ['denops.vim']
+hook_source = '''
+  source ~/.vim/rc/completion.vim
+'''
+on_event = 'InsertEnter'
+repo = 'Shougo/ddc.vim'
+
+[[plugins]]
+on_source = ['ddc.vim']
+repo = 'Shougo/pum.vim'
+
+[[plugins]]
+on_source = ['ddc.vim']
+repo = 'Shougo/ddc-ui-pum'
+
+[[plugins]]
+on_source = ['ddc.vim']
+repo = 'LumaKernel/ddc-source-file'
+
+[[plugins]]
+on_source = ['ddc.vim']
+repo = 'Shougo/ddc-source-around'
+
+[[plugins]]
+depends = ['vim-lsp']
+on_source = ['ddc.vim']
+repo = 'shun/ddc-vim-lsp'
+
+[[plugins]]
+on_source = ['ddc.vim']
+repo = 'Shougo/neco-vim'
+
+[[plugins]]
+on_source = ['ddc.vim']
+repo = 'Shougo/ddc-source-cmdline'
+
+[[plugins]]
+on_source = ['ddc.vim']
+repo = 'Shougo/ddc-source-cmdline_history'
+
+[[plugins]]
+on_source = ['ddc.vim']
+repo = 'tani/ddc-fuzzy'
+
+[[plugins]]
+on_source = ['ddc.vim']
+repo = 'Shougo/ddc-matcher_head'
+
+[[plugins]]
+on_source = ['ddc.vim']
+repo = 'Shougo/ddc-sorter_rank'
+
+[[plugins]]
+on_source = ['ddc.vim']
+repo = 'Shougo/ddc-converter_remove_overlap'
+
+# ====================
+# スニペット (InsertEnter時)
+# ====================
+[[plugins]]
+hook_source = '''
+  let g:neosnippet#enable_snipmate_compatibility = 1
+  let g:neosnippet#enable_completed_snippet = 1
+  imap <expr><C-k> neosnippet#expandable_or_jumpable() ?"\<Plug>(neosnippet_expand_or_jump)" : ""
+  smap <expr><C-k> neosnippet#expandable_or_jumpable() ?"\<Plug>(neosnippet_expand_or_jump)" : ""
+'''
+on_event = 'InsertEnter'
+repo = 'Shougo/neosnippet.vim'
+
+[[plugins]]
+on_source = ['neosnippet.vim']
+repo = 'Shougo/neosnippet-snippets'
+
+[[plugins]]
+hook_source = '''
+  let g:echodoc#enable_at_startup = 1
+  let g:echodoc#type = 'echo'
+'''
+on_event = 'InsertEnter'
+repo = 'Shougo/echodoc.vim'
+
+# ====================
+# 入力補助 (InsertEnter時)
+# ====================
+[[plugins]]
+on_event = 'InsertEnter'
+repo = 'jiangmiao/auto-pairs'
+
+# ====================
+# FZF (コマンド実行時)
+# ====================
+[[plugins]]
+build = './install --all'
+hook_add = '''
+  source ~/.vim/rc/fzf.vim
+'''
+on_cmd = ['Files', 'Rg', 'Buffers', 'History', 'BLines', 'Marks']
+repo = 'junegunn/fzf'
+
+[[plugins]]
+depends = ['fzf']
+on_source = ['fzf']
+repo = 'junegunn/fzf.vim'
+
+# ====================
+# ファイラ (コマンド実行時)
+# ====================
+[[plugins]]
+hook_add = '''
+  nnoremap <silent> <C-n> :Fern . -drawer -toggle<CR>
+'''
+hook_source = '''
+  source ~/.vim/rc/fern.vim
+'''
+on_cmd = ['Fern']
+repo = 'lambdalisue/fern.vim'
+
+# ====================
+# Git操作 (コマンド実行時)
+# ====================
+[[plugins]]
+on_cmd = ['Git', 'Gstatus', 'Gcommit', 'Gdiff', 'Gblame', 'Glog']
+repo = 'tpope/vim-fugitive'
+
+# ====================
+# 編集補助 (キー入力時)
+# ====================
+[[plugins]]
+on_map = ['<Plug>(sandwich-']
+repo = 'machakann/vim-sandwich'
+
+[[plugins]]
+on_map = ['gc', 'gcc']
+repo = 'tomtom/tcomment_vim'
+
+[[plugins]]
+hook_add = '''
+  xmap ga <Plug>(EasyAlign)
+  nmap ga <Plug>(EasyAlign)
+'''
+on_map = ['<Plug>(EasyAlign)']
+repo = 'junegunn/vim-easy-align'
+
+[[plugins]]
+hook_add = '''
+  vmap v <Plug>(expand_region_expand)
+  vmap V <Plug>(expand_region_shrink)
+'''
+on_map = ['<Plug>(expand_region_']
+repo = 'terryma/vim-expand-region'
+
+# ====================
+# 移動・検索 (キー入力時)
+# ====================
+[[plugins]]
+hook_add = '''
+  nmap j <Plug>(accelerated_jk_gj)
+  nmap k <Plug>(accelerated_jk_gk)
+'''
+on_map = ['<Plug>(accelerated_jk_']
+repo = 'rhysd/accelerated-jk'
+
+[[plugins]]
+hook_add = '''
+  let g:clever_f_across_no_line = 0
+  let g:clever_f_smart_case = 1
+'''
+on_map = ['f', 'F', 't', 'T']
+repo = 'rhysd/clever-f.vim'
+
+[[plugins]]
+hook_add = '''
+  let g:EasyMotion_do_mapping = 0
+  let g:EasyMotion_smartcase = 1
+  let g:EasyMotion_keys = 'ASDFGHJKL'
+  let g:EasyMotion_use_upper = 1
+  nmap ss <Plug>(easymotion-overwin-f2)
+  xmap ss <Plug>(easymotion-overwin-f2)
+  omap ss <Plug>(easymotion-overwin-f2)
+'''
+on_map = ['<Plug>(easymotion-']
+repo = 'easymotion/vim-easymotion'
+
+[[plugins]]
+on_map = ['*', '#']
+repo = 'nelstrom/vim-visual-star-search'
+
+[[plugins]]
+hook_add = '''
+  nmap n <Plug>(anzu-n)<Plug>(anzu-mode)
+  nmap N <Plug>(anzu-N)<Plug>(anzu-mode)
+'''
+on_map = ['<Plug>(anzu-']
+repo = 'osyo-manga/vim-anzu'
+
+# ====================
+# 表示補助 (イベント時)
+# ====================
+[[plugins]]
+hook_source = '''
+  highlight HighlightedyankRegion cterm=reverse gui=reverse
+  let g:highlightedyank_highlight_duration = 500
+'''
+on_event = 'TextYankPost'
+repo = 'machakann/vim-highlightedyank'
+
+[[plugins]]
+hook_add = '''
+  nnoremap <C-s> :OverCommandLine <CR>%s//g<Left><Left>
+  nnoremap sub :OverCommandLine<CR>%s/<C-r><C-w>//g<Left><Left>
+'''
+on_cmd = ['OverCommandLine']
+repo = 'osyo-manga/vim-over'

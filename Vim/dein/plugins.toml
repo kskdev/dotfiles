@@ -1,0 +1,56 @@
+# Vim dein plugins.toml - 即時読み込みプラグイン
+# 起動時に必要なプラグインのみを定義
+
+# ====================
+# プラグイン管理
+# ====================
+[[plugins]]
+repo = 'Shougo/dein.vim'
+
+# ====================
+# 外観 (起動時に必要)
+# ====================
+[[plugins]]
+repo = 'rafi/awesome-vim-colorschemes'
+
+[[plugins]]
+hook_add = '''
+  source ~/.vim/rc/lightline.vim
+'''
+repo = 'itchyny/lightline.vim'
+
+[[plugins]]
+depends = ['lightline.vim']
+repo = 'mengelbrecht/lightline-bufferline'
+
+# ====================
+# Denops (ddc.vim の依存)
+# ====================
+[[plugins]]
+repo = 'vim-denops/denops.vim'
+
+# ====================
+# 基本UI拡張 (常に必要)
+# ====================
+[[plugins]]
+hook_add = '''
+  let g:indent_guides_enable_on_vim_startup = 1
+  let g:indent_guides_auto_colors = 0
+  let g:indent_guides_guide_size = 1
+'''
+repo = 'nathanaelkane/vim-indent-guides'
+
+[[plugins]]
+hook_add = '''
+  let g:loaded_matchit = 1
+'''
+repo = 'andymass/vim-matchup'
+
+# ====================
+# Git連携 (左端の差分表示は常に必要)
+# ====================
+[[plugins]]
+hook_add = '''
+  let g:gitgutter_highlight_lines = 0
+'''
+repo = 'airblade/vim-gitgutter'
