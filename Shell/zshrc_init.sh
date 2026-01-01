@@ -8,7 +8,7 @@
 # -----------------------------------
 # ~/.zshrc が存在しなければ作成する
 # -----------------------------------
-IS_ZSHRC=${HOME}/.zhsrc
+IS_ZSHRC=${HOME}/.zshrc
 if [ -e ${IS_ZSHRC} ]; then
   # Pass
   :
@@ -23,11 +23,11 @@ fi
 MYZSHRC_ABS_PATH=$(cd $(dirname $0); pwd)"/myzshrc.sh"
 REQUIRED_TXT="source ${MYZSHRC_ABS_PATH}"
 # if grep ${REQUIRED_TXT} ~/.zshrc; then
-if grep ${REQUIRED_TXT} ~/.zshrc >/dev/null; then
+if grep -F "${REQUIRED_TXT}" ~/.zshrc >/dev/null; then
     echo "pattern exists."
     :
 else
     echo "pattern does not exists. add setting to ~/.zshrc"
-    echo ${REQUIRED_TXT} >> ~/.zshrc
+    echo "${REQUIRED_TXT}" >> ~/.zshrc
 fi
 

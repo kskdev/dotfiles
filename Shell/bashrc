@@ -45,9 +45,7 @@ alias axel='axel -a -n 10'
 # -----------------------------------
 # 大文字小文字を無視してパスのtab補完
 # -----------------------------------
-if grep 'set completion-ignore-case on' ~/.inputrc >/dev/null; then
-    echo 'set completion-ignore-case on' > ~/.inputrc
-else
+if [ ! -f ~/.inputrc ] || ! grep -q 'set completion-ignore-case on' ~/.inputrc; then
     echo 'set completion-ignore-case on' >> ~/.inputrc
 fi
 

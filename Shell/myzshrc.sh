@@ -111,11 +111,12 @@ function history-all { history -E 1 }
 bindkey "^R" history-incremental-search-backward
 
 # コマンドを途中まで入力後，履歴からその単語で始まるコマンドを検索（カーソルを末尾へ移動）
-autoload -Uz history-search-end
-zle -N history-beginning-search-backward-end history-search-end
-zle -N history-beginning-search-forward-end history-search-end
-bindkey "^p" history-beginning-search-backward-end
-bindkey "^n" history-beginning-search-forward-end   # ^bから標準的な^nに変更
+if autoload -Uz history-search-end; then
+    zle -N history-beginning-search-backward-end history-search-end
+    zle -N history-beginning-search-forward-end history-search-end
+    bindkey "^p" history-beginning-search-backward-end
+    bindkey "^n" history-beginning-search-forward-end   # ^bから標準的な^nに変更
+fi
 
 
 
@@ -200,7 +201,10 @@ elif [ -n "${CONDA_DEFAULT_ENV}" ]; then
 fi
 
 # クライアントPCのIP Addressのみ取得
-CLIENT_IP=$(cut -d' ' -f 1 <<<${SSH_CONNECTION})
+CLIENT_IP=""
+if [ -n "${SSH_CONNECTION}" ]; then
+    CLIENT_IP=$(cut -d' ' -f 1 <<<${SSH_CONNECTION})
+fi
 # SSH情報追加
 [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] && _SSH="$RED""[SSH] ${CLIENT_IP} -> "
 
@@ -304,7 +308,6 @@ export PYTHONIOENCODING=utf-8
 
 # git diff や git status などの日本語メッセージ文字化けを対策 https://maku77.github.io/git/settings/garbling.html
 export GIT_PAGER="LESSCHARSET=utf-8 less"
-git config --global core.quotepath false
 
 # :::::::::::::::::::::::::::::::::::::
 # ::::: 端末共通設定(未検証)
@@ -313,8 +316,9 @@ alias gitlog='git log --oneline --graph --all'
 #ディレクトリ構成表示
 alias tree="pwd;find . | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/| /g'"
 # vim(or neoivm)の起動速度測定(vs default setting)
-function measureSpeedVim() { command echo "scale=3; $(vim --startuptime /tmp/stime_mine.log -c 'quit' > /dev/null && tail -n 1 /tmp/stime_mine.log | cut -d ' ' -f1) / $(vi -u DEFAULTS --startuptime /tmp/stime_def.log -c 'quit' > /dev/null && tail -n 1 /tmp/stime_def.log | cut -d ' ' -f1)" | bc | xargs -i echo {}x slower your Vim than the default. }
-function measureSpeedNeovim() { echo "scale=3; $(nvim --startuptime /tmp/stime_mine.log -c 'quit' > /dev/null && tail -n 1 /tmp/stime_mine.log | cut -d ' ' -f1) / $(vi -u DEFAULTS --startuptime /tmp/stime_def.log -c 'quit' > /dev/null && tail -n 1 /tmp/stime_def.log | cut -d ' ' -f1)" | bc | xargs -i echo {}x slower your Vim than the default. }
+# vim(or neoivm)の起動速度測定(vs default setting)
+function measureSpeedVim() { command echo "scale=3; $(vim --startuptime /tmp/stime_mine.log -c 'quit' > /dev/null && tail -n 1 /tmp/stime_mine.log | cut -d ' ' -f1) / $(vi -u DEFAULTS --startuptime /tmp/stime_def.log -c 'quit' > /dev/null && tail -n 1 /tmp/stime_def.log | cut -d ' ' -f1)" | bc | xargs -I{} echo {}x slower your Vim than the default. }
+function measureSpeedNeovim() { echo "scale=3; $(nvim --startuptime /tmp/stime_mine.log -c 'quit' > /dev/null && tail -n 1 /tmp/stime_mine.log | cut -d ' ' -f1) / $(vi -u DEFAULTS --startuptime /tmp/stime_def.log -c 'quit' > /dev/null && tail -n 1 /tmp/stime_def.log | cut -d ' ' -f1)" | bc | xargs -I{} echo {}x slower your Vim than the default. }
 
 
 # ------------------------------
