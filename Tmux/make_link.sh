@@ -12,15 +12,15 @@
 # --- Create symbolic link --- #
 
 # リンクが存在するなら，削除
-if [ ! -e '~/.tmux.conf' ]; then
-  echo 'Remove link : ' '~/.tmux.conf'
+if [ -e ~/.tmux.conf ]; then
+  echo "Remove link : ~/.tmux.conf"
   unlink ~/.tmux.conf
 fi
 
 # リンクが存在しなければ，リンクを作成
 _TARGET1='tmux.conf'
 _SOURCE1=$(pwd)'/'${_TARGET1}
-if [ ! -e '~/'${_TARGET1} ]; then
+if [ ! -e ~/${_TARGET1} ]; then
   echo 'Create link : ' ${_SOURCE1}
   ln -s ${_SOURCE1} ~/.tmux.conf
 fi
