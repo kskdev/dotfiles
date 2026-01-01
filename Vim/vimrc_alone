@@ -1,17 +1,29 @@
-" How to use this file.
-" このファイルを .vimrc として，HOMEディレクトリに配置して，vimを起動するだけ．
-" Installer for Windows: ./install_cmd_alone.bat
-" Installer for MacOS/Linux: ./install_vim_zsh.sh
+" This file should be placed as .vimrc in your home directory.
+" Installer for MacOS/Linux: ./install_zsh.sh
 "
-" Gvim on Windows: _gvimrc _vimrc にリネームしてホームディレクトリに配置.
-" _gvimrc or _vimrc だけだとカラースキーマが反映されない
-" TODO 現状FZFがうまく機能していない
-" 外部依存のPython を削除してほぼvimscriptで完結するようにプラグインを再考
-" せいぜい,FZFで利用するバイナリファイル程度
-" TODO 本当にPythonの依存から脱却できているかは微妙.
+" Required external dependencies:
+"   - macOS: brew install fzf ripgrep deno
+"   - Linux: apt install fzf ripgrep deno
+"
+" TODO 外部依存のPython を削除してほぼvimscriptで完結するようにプラグインを再考
+" TODO 本当にPythonの依存から脱却できているかは微妙
 "      (vim-lspは使っているかもしれないため...)
 
 " //		vim setting and tips		//
+
+" macOS Homebrew環境でfzf/ripgrepを利用可能にするためのPATH設定
+" (vimがシェル環境変数を継承しない場合に備える)
+if has('mac')
+    " ARM Mac (M1/M2等)
+    if isdirectory('/opt/homebrew/bin')
+        let $PATH = '/opt/homebrew/bin:' . $PATH
+    endif
+    " Intel Mac
+    if isdirectory('/usr/local/bin')
+        let $PATH = '/usr/local/bin:' . $PATH
+    endif
+endif
+
 " vim起動時にReplace Modeで起動されてしまう現象の対策
 " 詳しくは : https://github.com/vim-jp/issues/issues/578
 set t_u7=
@@ -150,8 +162,7 @@ nnoremap <C-w> <C-w><C-w>
 set whichwrap=b,s,<,>,[,],h,l
 
 " インサートモードからノーマルモードへ移行
-" (Linux+fcitxの場合は日本語入力を無効化してノーマルモードに移行)
-if has('unix')
+if executable('fcitx-remote')
     inoremap jj <ESC>:call system('fcitx-remote -c')<CR>
     inoremap っｊ <ESC>:call system('fcitx-remote -c')<CR>
 else
@@ -253,11 +264,8 @@ call dein#add('osyo-manga/vim-anzu') " 検索位置を表示(マッチ数等も�
 call dein#add('tpope/vim-fugitive') " vim上でgit操作を可能にする
 call dein#add('airblade/vim-gitgutter') " git の diffを左端に表示
 " FZF: Lazyに検索するI/F
-if has('win32') || has('win64')
-    call dein#add('junegunn/fzf', {'dir': '~/.fzf', 'hook_post_update': 'call fzf#install()' })
-elseif has('mac') || has('unix')
-    call dein#add('junegunn/fzf', {'build': './install --all'}) " 曖昧検索(ファジー検索)インターフェース
-endif
+" FZF: システムにインストールされた fzf/ripgrep を利用
+call dein#add('junegunn/fzf', {'build': './install --all'}) " 曖昧検索(ファジー検索)インターフェース
 call dein#add('junegunn/fzf.vim') " 'junegunn/fzf' のvim用プラグイン
 
 " Colorscheme & Statusbar
@@ -648,13 +656,11 @@ let g:gitgutter_sign_modified_removed = 'w'
 nmap <C-f> <Plug>(GitGutterNextHunk)
 nmap <C-d> <Plug>(GitGutterPrevHunk)
 
-" fzf 設定
-" Windows 環境でripgrep を利用できるようにPATHを通す
+" FZF用PATHを追加（deinでインストールされたfzfのbinディレクトリ）
 let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
-" if has('win64')
-let $PATH .= ';' . s:fzf_bin_dir
-" else
-" endif
+if isdirectory(s:fzf_bin_dir)
+    let $PATH .= ':' . s:fzf_bin_dir
+endif
 
 " fzf.vim 設定
 " <Leader> + a でRipgrep(ripgrepがインストールされていないと使えない)
@@ -871,62 +877,3 @@ let g:lightline#bufferline#show_number = 0 " バッファ名に番号を表示�
 let g:lightline#bufferline#shorten_path = 1 " バッファ名を表示するときにパスを省略型で表示
 let g:lightline#bufferline#unnamed = '[E]' " 名前の付いていないバッファが表示された時の標記方法
 let g:lightline#bufferline#filename_modifier = '%f' " バッファの表示設定(相対パスで表示)
-
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" GVim用設定ファイル(ターミナルからvim.exeを起動するとおかしくなるので一部コメント化)
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if has('win64') && has('gui')
-    " GVim起動時にホームディレクトリへ移動
-    autocmd VimEnter * silent! lcd ~
-
-    " Screen UI 設定(余計なGUIを削除)
-    " set lines=30 " ウインドウの高さ
-    " set columns=100 " ウインドウの幅
-    set cmdheight=1 " コマンドラインの高さ(GUI使用時)
-    set guioptions-=e " タブバーCUI化
-    set guioptions-=T " ツールバー非表示
-    set guioptions-=m " メニューバー非表示
-    " スクロールバー非表示(左右/水平)
-    set guioptions-=r
-    set guioptions-=R
-    set guioptions-=l
-    set guioptions-=L
-    set guioptions-=b
-    set guioptions-=h
-
-    " Mouse UX 設定
-    set mouse=a " どのモードでもマウスを使えるようにする
-    set nomousefocus " マウスの移動でフォーカスを自動的に切替えない (mousefocus:切り替える)
-    set mousehide " 入力時にマウスポインタを隠す (nomousehide:隠さない)
-    " set guioptions+=a " ビジュアル選択(D&D他)を自動的にクリップボードへ (:help guioptions_a)
-
-    " Input for japanese 設定
-    if has('multi_byte_ime') || has('xim') " IME ON時のカーソルの色を設定(設定例:紫)
-        highlight CursorIM guibg=Purple guifg=White
-        set iminsert=0 imsearch=0 " 挿入モード・検索モードでのデフォルトのIME状態設定 (8.0.1114 でデフォルトになったが念のため残してある)
-        " 挿入モードでのIME状態を記憶させない場合、次行のコメントを解除
-        inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
-    endif
-
-    " Font 設定
-    " フォント確認 : Win+R実行後, %windir%\fonts を入力
-    " Cica[https://github.com/miiton/Cica/releases]などがオススメ
-    set guifont=Cica-Regular:h16:cSHIFTJIS  " 使わなくても良いかも(くどい)
-    " set guifont=MS_Gothic:h12:cSHIFTJIS  " Default value
-    set linespace=1 " 行間隔の設定
-    " 一部のUCS文字の幅を自動計測して決める
-    if has('kaoriya')
-        set ambiwidth=auto
-    endif
-
-    " ファイルを開いた瞬間だけそのディレクトリに移動
-    augroup gvim_cwd
-      autocmd!
-      autocmd BufReadPost * if expand('%:p') != '' | silent! lcd %:p:h | endif
-    augroup END
-    " ステータスラインに CWD を出す
-    set statusline=%{fnamemodify(getcwd(),':~')}
-
-endif
-
