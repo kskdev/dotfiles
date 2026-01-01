@@ -3,8 +3,9 @@
 
 # ignore specific file.
 /**/.DS_Store
-
+*.swp
+Git/.git-credentials
+.gitconfig.local
 # ignore specfic dir.
 /bin/
 **/__pycache__/
-

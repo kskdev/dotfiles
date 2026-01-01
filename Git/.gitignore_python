@@ -1,0 +1,21 @@
+# For local config (don't locate global or system.)
+
+# Compiled files.
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment.
+venv/
+env/
+ENV/
+.venv/
+
+# Distribution packages.
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Notebook
+.ipynb_checkpoints
