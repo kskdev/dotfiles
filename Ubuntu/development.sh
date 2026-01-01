@@ -1,22 +1,22 @@
 #!/bin/sh
 
-sudo apt update && sudo apt upgrade -y
-
-# Audio
-sudo apt install -y sox
-sudo apt install -y portaudio19-dev  # pyaudio depends on this library.
-
-sudo apt autoremove -y
+# Audio (optional, but keep as is)
+sudo apt install -y sox portaudio19-dev
 
 # Deno (for my vim envrionment. (using denops))
-curl -fsSL https://deno.land/install.sh | sh
+if ! command -v deno > /dev/null; then
+    curl -fsSL https://deno.land/install.sh | sh
+fi
+
 INSTALL_PATH_DENO="$HOME/.deno/bin"
-if grep ${INSTALL_PATH_DENO} ~/.zshrc >/dev/null; then
-  echo "[SKIPPED] Already exists deno path in ~/.zshrc"
+ZSHRC="$HOME/.zshrc"
+
+if [ -f "$ZSHRC" ] && grep -Fq "$INSTALL_PATH_DENO" "$ZSHRC"; then
+  echo "[SKIPPED] Already exists deno path in $ZSHRC"
 else
-  echo "# Deno" >> ~/.zshrc
-  echo "export PATH=\"$INSTALL_PATH_DENO:\$PATH\"" >> ~/.zshrc
-  echo "" >> ~/.zshrc
-  echo "[ADD] Write Deno path in ~/.zshrc"
+  [ ! -f "$ZSHRC" ] && touch "$ZSHRC"
+  echo "\n# Deno" >> "$ZSHRC"
+  echo "export PATH=\"$INSTALL_PATH_DENO:\$PATH\"" >> "$ZSHRC"
+  echo "[ADD] Write Deno path in $ZSHRC"
 fi
 

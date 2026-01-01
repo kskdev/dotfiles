@@ -7,7 +7,7 @@
 
 # --- install apps
 echo -e "\e[31m ::: 1. Install apps via apt \e[m"
-cd ./AppInit/
+cd ./Ubuntu/
 sh init_ubuntu.sh
 cd ../
 
