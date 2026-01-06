@@ -48,7 +48,7 @@ cd "$BUILD_VIM_DIR"
 echo "[INSTALL] Required packages..."
 
 # 基本パッケージ
-BASE_PACKAGES="git build-essential gettext libtinfo-dev libncurses-dev libacl1-dev libgpm-dev libperl-dev python3-dev ruby-dev autoconf automake cproto"
+BASE_PACKAGES=(git build-essential gettext libtinfo-dev libncurses-dev libacl1-dev libgpm-dev libperl-dev python3-dev ruby-dev autoconf automake cproto)
 
 # GUI関連パッケージ (オプション)
 if [ "${VIM_NO_GUI:-0}" = "1" ]; then
@@ -56,13 +56,13 @@ if [ "${VIM_NO_GUI:-0}" = "1" ]; then
   GUI_PACKAGES=""
   GUI_OPTION="--enable-gui=no"
 else
-  GUI_PACKAGES="libxmu-dev libxpm-dev libgtk-3-dev"
+  GUI_PACKAGES=(libxmu-dev libxpm-dev libgtk-3-dev)
   GUI_OPTION="--enable-gui=gtk3"
 fi
 
 $SUDO apt-get update
-$SUDO apt-get -y install $BASE_PACKAGES $GUI_PACKAGES
-
+# $SUDO apt-get -y install $BASE_PACKAGES $GUI_PACKAGES
+$SUDO apt-get -y install "${BASE_PACKAGES[@]}" "${GUI_PACKAGES[@]}"
 
 # ソース取得
 echo "[CLONE] Vim source..."
