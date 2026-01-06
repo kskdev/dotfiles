@@ -53,32 +53,34 @@
 # ----------- Basic libraries
 pip
 setuptools
-neovim
-python-language-server
+python-lsp-server
 
 numpy
-pandas
 Pillow
+soundfile
+sounddevice
+pandas
 matplotlib
 jupyterlab
-flask
 
 
 # ----- Image Processing
-opencv-python
+# opencv-python
 
 # ----- Sound Processing
 # Note : pydub depend on FFmpeg.
 # Note : pyaudio requires portaudio19-dev
-librosa
-sox
-pydub
-pyaudio
-pyroomacoustics
+# librosa
+# sox
+# pydub
+# pyaudio
+# pyroomacoustics
 
 # ----- Machine Learning
-# torch===1.7.0+cu110
-# torchaudio===0.7.0
-# torchvision===0.8.1+cu110
-# -f https://download.pytorch.org/whl/torch_stable.html
-
+# DeepLearning
+torch==2.9.1+cu130
+torchaudio==2.9.1+cu130
+torchvision==0.24.1+cu130
+torchcodec==0.9.1
+# Extra Index URL
+--extra-index-url https://download.pytorch.org/whl/cu130
