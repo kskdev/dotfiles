@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/env bash
 
 # Vim ソースビルド・インストールスクリプト (Linux/apt環境)
 #
@@ -7,6 +7,11 @@
 #   - Dockerコンテナ (root権限)
 #   - sudo権限のあるユーザ環境
 #
+# 利用想定:
+#   - Ubuntu : ターゲット
+#   - macOS  : 非ターゲット．(brew から入れる)
+#   - Windows: 非ターゲット
+#
 # ref: https://vim-jp.org/docs/build_linux.html
 #
 # How to uninstall:
@@ -14,8 +19,7 @@
 #   make uninstall
 #
 # 環境変数:
-#   VIM_NO_GUI=1  : GUIなしでビルド (Dockerコンテナ向け)
-#   VIM_PREFIX    : インストール先 (デフォルト: /opt/vim91)
+#   VIM_PREFIX : インストール先 (デフォルト: /opt/vim91)
 #
 
 set -e
@@ -30,7 +34,7 @@ else
 fi
 
 # 設定
-VIM_VERSION="v9.1.1893"
+VIM_VERSION="v9.1.2050"
 VIM_PREFIX="${VIM_PREFIX:-/opt/vim91}"
 BUILD_VIM_DIR="${HOME}/BuiltVim"
 
@@ -43,66 +47,61 @@ echo "[MKDIR] $BUILD_VIM_DIR"
 mkdir -p "$BUILD_VIM_DIR"
 cd "$BUILD_VIM_DIR"
 
-
 # 依存パッケージのインストール
 echo "[INSTALL] Required packages..."
 
-# 基本パッケージ
-BASE_PACKAGES=(git build-essential gettext libtinfo-dev libncurses-dev libacl1-dev libgpm-dev libperl-dev python3-dev ruby-dev autoconf automake cproto)
-
-# GUI関連パッケージ (オプション)
-if [ "${VIM_NO_GUI:-0}" = "1" ]; then
-  echo "[INFO] Building without GUI support (VIM_NO_GUI=1)"
-  GUI_PACKAGES=""
-  GUI_OPTION="--enable-gui=no"
-else
-  GUI_PACKAGES=(libxmu-dev libxpm-dev libgtk-3-dev)
-  GUI_OPTION="--enable-gui=gtk3"
-fi
+BASE_PACKAGES=(
+  git
+  build-essential
+  gettext
+  libtinfo-dev
+  libncurses-dev
+  libacl1-dev
+  libgpm-dev
+  libperl-dev
+  python3-dev
+  ruby-dev
+  autoconf
+  automake
+  cproto
+)
 
 $SUDO apt-get update
-# $SUDO apt-get -y install $BASE_PACKAGES $GUI_PACKAGES
-$SUDO apt-get -y install "${BASE_PACKAGES[@]}" "${GUI_PACKAGES[@]}"
+$SUDO apt-get -y install "${BASE_PACKAGES[@]}"
 
 # ソース取得
 echo "[CLONE] Vim source..."
 git clone https://github.com/vim/vim.git
-mv vim/ vim91/
-cd vim91/
+mv vim vim91
+cd vim91
 git checkout "$VIM_VERSION"
-
 
 # ビルド
 echo "[BUILD] Configuring..."
 make distclean 2>/dev/null || true
 
+# CUI Only
 ./configure \
   --prefix="$VIM_PREFIX" \
-  --enable-multibyte \
-  --enable-fontset \
-  --enable-xim \
-  --enable-terminal \
-  --enable-fail-if-missing \
-  --enable-cscope \
   --with-features=huge \
-  $GUI_OPTION \
+  --enable-gui=no \
+  --with-tlib=ncursesw \
+  --enable-clipboard \
   --enable-python3interp \
-  --with-python3-command=/usr/bin/python3
+  --with-python3-command=/usr/bin/python3 \
+  --enable-fail-if-missing
 
 echo "[BUILD] Compiling..."
 make -j"$(nproc)"
-
 
 # インストール
 echo "[INSTALL] Installing to $VIM_PREFIX..."
 $SUDO make install
 
-
 # PATH設定 (シェル設定ファイルに追加)
 echo ""
 echo "=== Post-install ==="
 
-# 使用するシェル設定ファイルを検出
 if [ -f "$HOME/.zshrc" ]; then
   SHELL_RC="$HOME/.zshrc"
 elif [ -f "$HOME/.bashrc" ]; then
