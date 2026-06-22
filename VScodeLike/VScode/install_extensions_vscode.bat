@@ -18,7 +18,6 @@ COPY /Y "%DOTFILES_DIR%settings.json" "%VSCODE_SETTINGS_DIR%\settings.json"
 COPY /Y "%DOTFILES_DIR%keybindings.json" "%VSCODE_SETTINGS_DIR%\keybindings.json"
 ECHO Settings and keybindings have been copied.
 
-
 ECHO.
 ECHO  Installing VSCode extensions...
 ECHO ================================

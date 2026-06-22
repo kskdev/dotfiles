@@ -44,7 +44,7 @@ if [[ -f "${EXTENSIONS_FILE}" ]]; then
     while IFS= read -r ext || [[ -n "$ext" ]]; do
         # 空行やコメント（#）で始まる行をスキップ
         [[ -z "${ext// /}" || "${ext}" =~ ^# ]] && continue
-        
+
         echo "Installing ${ext}..."
         # agy: antigravityのコマンドラインツール
         agy --force --install-extension "${ext}" || echo "Warning: Failed to install ${ext}. Skipping..."
