@@ -37,8 +37,19 @@ sh init.sh
 
 ## Log
 
+#### 2026/06/23
+
+- `VScodeLike/` を `VScode/` と `Antigravity/` に分割
+  - アプリごとに設定ファイル，拡張機能リスト，インストーラを独立化
+- Python ML リファクタリング用 Codex スキル (`.codex/skills/refactor-python-ml/`) を追加
+
+#### 2026/06/12
+
+- Tmux 設定 (`Tmux/tmux.conf`) のスタイル調整
+
 #### 2026/01/06
 
+- Python 依存パッケージリスト (`Python/requirements.txt`) の更新
 - Vim ビルドスクリプト (`Vim/build.sh`) の更新
   - CUI 専用ビルドに変更 (GUI 関連のオプションが冗長だったため削除)
   - インストール後に PATH および alias をシェル設定ファイル (`.zshrc` / `.bashrc`) に自動追加する機能を追加
