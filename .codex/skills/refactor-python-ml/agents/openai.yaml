@@ -1,0 +1,4 @@
+interface:
+  display_name: "Refactor Python ML"
+  short_description: "Apply the personal Python and ML coding style"
+  default_prompt: "Use $refactor-python-ml to refactor or review this Python ML code with reusable blocks, explicit configuration, and clear documentation."
