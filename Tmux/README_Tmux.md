@@ -5,6 +5,7 @@
 ## 構成
 
 - **tmux.conf**: tmux のメイン設定ファイル．
+- **theme.conf**: ステータスバーやペインの配色設定．`tmux.conf` からリポジトリ内のファイルを直接読み込む．
 - **make_link.sh**: ホームディレクトリへのシンボリックリンク作成スクリプト．
 - **gpuinfo_tmux.sh**: ステータスバーに GPU 情報を表示するための補助スクリプト．
 
@@ -40,6 +41,16 @@
 - 設定のリロード: `prefix + r`
 - コピーモード開始: `prefix + [` （Vim ライクな操作可能）
 - コピーモード中のヤンク: `y`（システムクリップボードと連携）
+
+## テーマ
+
+テーマ用のシンボリックリンクは不要．リポジトリを `~/dotfiles` 以外に配置した場合は，`tmux.conf` の `source-file ~/dotfiles/Tmux/theme.conf` を実際のパスに変更する．
+
+`tmux.conf` の `@theme_name` で `modern`，`molokai`，`orange`，`iceberg`，`tender`，`ubuntu` を選択する．現在は `molokai` を選択している．不明な名前を指定した場合は `modern` になる．
+
+配色は既定で HEX 色を使う．256 色指定を使う場合は `@theme_legacy` を `on` に変更する．色自体は `theme.conf` で編集できる．`ubuntu` の背景に使う `colour0` は端末のパレットに依存するため，HEX 色との差が出る場合がある．
+
+ペイン上端には番号とプログラム名を表示する．アクティブなペインはテーマ色の境界線と，見出しの `●` および太字で示す．背景色は `color_pane` で指定する．
 
 ## プラグイン管理 (TPM)
 
