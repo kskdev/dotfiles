@@ -4,18 +4,22 @@ Generated with Antigravity.
 
 各種開発環境やアプリの設定ファイルを管理するレポジトリ
 
-特定の環境に依存せず，`git clone` だけで再現性のある環境構築の補助を目的としている
+特定の環境に依存せず `git clone` だけで再現性のある環境構築を補助
 
 ## 構成
 
-主要なディレクトリ構成は以下の通り
+ディレクトリ構成は以下の通り
 
-- **Git/**: Git の共通設定，エイリアス，グローバルな ignore 設定
-- **Shell/**: zsh/bash の設定ファイル，便利なコマンド群
-- **Vim/**: Vim 設定 (dein.vim + ddc.vim による補完対応，macOS/Linux 向け)
-- **Tmux/**: tmux の設定
-- **VScodeLike/**: VSCode や Antigravity 用の設定と拡張機能リスト
-- **Ubuntu/**: Ubuntu 環境の初期セットアップ用スクリプト
+- **AGENTS/**: モデルプロバイダごとの配布用グローバルエージェント設定・スキル
+- **Git/**: Git の共通設定 エイリアス グローバルな ignore 設定
+- **Shell/**: zsh/bash の設定ファイル 便利なコマンド群
+- **Vim/**: Vim 設定 (dein.vim + ddc.vim による補完対応 macOS/Linux 向け)
+- **Tmux/**: tmux の設定 (選択式テーマ対応)
+- **VScodeLike/**: `VScode/` と `Antigravity/` 用の設定と拡張機能リスト
+- **Ubuntu/**: Ubuntu 環境 (VM / Docker / GPU レンタルサーバ対応) の初期セットアップ用スクリプト
+- **Python/**: Python 環境用のパッケージリスト (`requirements.txt`)
+- **Utils/**: TeX 自動コンパイルやファイル変更検知などの補助スクリプト群
+- **WindowsTerminal/**: Windows Terminal 用設定 (`settings.json`)
 
 ## セットアップ
 
@@ -27,15 +31,24 @@ sh init.sh
 
 ### 個別インストール
 
-各ディレクトリにある `make_link.sh` や `install.sh` を使用．詳細は各ディレクトリの README を参照
+各ディレクトリにある `make_link.sh` や `install.sh` を使用 詳細は各ディレクトリの README を参照
 
 ## 運用ポリシー
 
-- **環境対応**: macOS，Ubuntu などの実行環境の変動や，git clone しか許可されていない環境での利用を想定
-- **セキュリティ**: 機密情報はレポジトリの管理対象外とし，それらの情報が含まれているファイルはコミットを禁止
-- **ツールの導入**: 管理コスト削減のため，既知であるツール以外の新しいツールやアプリの導入は非推奨．
+詳細は [AGENTS.md](AGENTS.md) を参照
+
+- **環境対応**: 基本対象は macOS / Ubuntu (`git clone` のみの制限環境や Headless 環境も考慮し Windows は該当設定がある範囲のみ)
+- **セキュリティ**: 個人情報・認証情報・Proxy 設定等は管理対象外とし 機密情報を含むファイルのコミットを禁止
+- **ツール導入**: 管理コスト増を抑えるため 既存構成のツールを優先し 新規導入は事前確認を前提とする
 
 ## Log
+
+#### 2026/11/21
+
+- `AGENTS.md` をリポジトリルートへ移行・整理 (旧 `.agent/rules/policy.md` を置き換え)
+- 配布用グローバルエージェント設定・スキルを `AGENTS/` 配下へ集約・整理
+- `init.sh` の古い参照・POSIX `sh` 非互換を修正 / `Git/make_link.sh` `Vim/build.sh` を `#!/bin/sh` へ統一
+- `readme.md` の構成一覧更新・LF 化および `VScodeLike/README_VSCodeLike.md` のログ削除
 
 #### 2026/06/23
 
