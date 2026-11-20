@@ -4,42 +4,36 @@
 # 環境構築 on Ubuntu
 # ::::::::::::::::::::::::::::::::::::::::
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # --- install apps
-echo -e "\e[31m ::: 1. Install apps via apt \e[m"
-cd ./Ubuntu/
-sh init_ubuntu.sh
-cd ../
+printf '\033[31m%s\033[m\n' " ::: 1. Install apps via apt "
+(cd "${SCRIPT_DIR}/Ubuntu" && sh init_ubuntu.sh)
 
 # --- setup tmux configs
-echo -e "\e[31m ::: 2. Setup tmux configs \e[m"
-cd ./Tmux/
-zsh make_link.sh
-cd ../
+printf '\033[31m%s\033[m\n' " ::: 2. Setup tmux configs "
+(cd "${SCRIPT_DIR}/Tmux" && sh make_link.sh)
 
 # --- setup zsh configs
-echo -e "\e[31m ::: 3. Setup zsh configs \e[m"
-cd ./Shell/
-zsh zshrc_init.sh
-cd ../
+printf '\033[31m%s\033[m\n' " ::: 3. Setup zsh configs "
+(cd "${SCRIPT_DIR}/Shell" && sh zshrc_init.sh)
 
 # --- setup vim configs
-echo -e "\e[31m ::: 4. Setup vim configs \e[m"
-cd ./Vim/
-zsh install_vim_zsh_alone.sh
-cd ../
+printf '\033[31m%s\033[m\n' " ::: 4. Setup vim configs "
+(cd "${SCRIPT_DIR}/Vim" && sh install.sh)
 
 # --- setup others settings.
-echo -e "\e[31m ::: Ex. Setup others configs \e[m"
-echo "input password for changing login shell."
-chsh -s $(which zsh)
-echo "reload .zshrc"
-source ~/.zshrc
+printf '\033[31m%s\033[m\n' " ::: Ex. Setup others configs "
+ZSH_PATH="$(command -v zsh || true)"
+if [ -n "${ZSH_PATH}" ] && [ "${SHELL}" != "${ZSH_PATH}" ]; then
+    echo "input password for changing login shell."
+    chsh -s "${ZSH_PATH}" || echo "Warning: Could not change shell with chsh. Run 'exec zsh -l' or edit ~/.bashrc."
+fi
+echo "Please re-login or run 'exec zsh -l' to apply ~/.zshrc."
 
 echo " "
 echo " "
-echo -e "\e[31m Done setup. hello myworld. \e[m"
+printf '\033[31m%s\033[m\n' " Done setup. hello myworld. "
 echo ""
 echo " "
 echo " "
-

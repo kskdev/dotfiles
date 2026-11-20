@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 # Vim ソースビルド・インストールスクリプト (Linux/apt環境)
 #
@@ -50,24 +50,21 @@ cd "$BUILD_VIM_DIR"
 # 依存パッケージのインストール
 echo "[INSTALL] Required packages..."
 
-BASE_PACKAGES=(
-  git
-  build-essential
-  gettext
-  libtinfo-dev
-  libncurses-dev
-  libacl1-dev
-  libgpm-dev
-  libperl-dev
-  python3-dev
-  ruby-dev
-  autoconf
-  automake
-  cproto
-)
-
 $SUDO apt-get update
-$SUDO apt-get -y install "${BASE_PACKAGES[@]}"
+$SUDO apt-get -y install \
+  git \
+  build-essential \
+  gettext \
+  libtinfo-dev \
+  libncurses-dev \
+  libacl1-dev \
+  libgpm-dev \
+  libperl-dev \
+  python3-dev \
+  ruby-dev \
+  autoconf \
+  automake \
+  cproto
 
 # ソース取得
 echo "[CLONE] Vim source..."

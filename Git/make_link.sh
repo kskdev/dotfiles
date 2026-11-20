@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
 # Git設定ファイルのシンボリックリンクを作成するスクリプト
 
-DOTFILES_GIT_DIR=$(cd $(dirname $0); pwd)
+DOTFILES_GIT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # 1. .gitconfig のリンク
 if [ -L ~/.gitconfig ]; then
